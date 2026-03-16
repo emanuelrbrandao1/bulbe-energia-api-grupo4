@@ -111,22 +111,13 @@ bulbe-energia-api-grupo4/
 
 | Sprint | Foco | Status |
 |--------|------|--------|
-| Kickoff | Apresentação dos trabalhos do semestre anterior | ✅ Concluída |
-| Sprint 1 | Setup + Elicitação de Requisitos | 🔄 Em andamento |
-| Sprint 2 | Modelagem + Arquitetura + CRUD básico | ⏳ Aguardando |
-| Sprint 3 | Banco de Dados + ORM + Testes | ⏳ Aguardando |
-| Sprint 4 | Autenticação + Documentação Final | ⏳ Aguardando |
+| Kickoff | Apresentação dos trabalhos do semestre anterior 
+| Sprint 1 | Setup + Elicitação de Requisitos 
+
 
 ---
 
-## 📖 Referências
 
-- SOMMERVILLE, I. *Software Engineering*. 10. ed. Pearson, 2015.
-- FOWLER, M. *Patterns of Enterprise Application Architecture*. Addison-Wesley, 2002.
-- RICHARDSON, L.; RUBY, S. *RESTful Web Services*. O'Reilly, 2007.
-- OpenAPI Initiative. *OpenAPI Specification v3.1.0*.
-
----
 
 ## 📄 Licença
 
