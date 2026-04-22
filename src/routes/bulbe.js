@@ -53,6 +53,43 @@ import { removerFavoritos, selecionarEntrega } from '../controllers/bulbeControl
 const router = Router();
 
 router.delete('/:id', removerFavoritos );
+
+/**
+ * @swagger
+ * /entrega:
+ *   post:
+ *     summary: Seleciona o tipo de entrega
+ *     description: Retorna o prazo estimado e o custo da entrega escolhida.
+ *     tags:
+ *       - Entrega
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tipo:
+ *                 type: string
+ *                 example: "express"
+ *                 description: Tipo de entrega (padrao ou express)
+ *     responses:
+ *       200:
+ *         description: Entrega selecionada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 tipo:
+ *                   type: string
+ *                 prazoEstimado:
+ *                   type: string
+ *                 custoEntrega:
+ *                   type: number
+ *       422:
+ *         description: Tipo de entrega inválido
+ */
 router.post('/', selecionarEntrega);
 
 
