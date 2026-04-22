@@ -65,7 +65,7 @@ app.get('/api-docs.json', (req, res) => {
 });
 
 // Rotas de negócio
-app.use('/api/v1/tarefas', tarefasRouter);
+app.use('/api/v1', bulbeRouter);
 
 // Health check
 app.get('/', (req, res) => {

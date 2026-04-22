@@ -48,12 +48,60 @@
  *           description: Mensagem descritiva do erro ocorrido.
  *           example: Campo obrigatório "name" faltando.
  */
+
+/**
+ * @openapi
+ * /favoritos:
+ *   get:
+ *     summary: Retornar favoritos do usuário autenticado
+ *     description: |
+ *       Retorna a lista de produtos favoritos do usuário autenticado.
+ *       Requer autenticação via JWT token.
+ *       **RF-09**: Retornar favoritos do usuário autenticado.
+ *     operationId: listarFavoritos
+ *     tags:
+ *       - Favoritos
+ *     responses:
+ *       200:
+ *         description: Lista de favoritos retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 sucesso:
+ *                   type: boolean
+ *                   example: true
+ *                 quantidade:
+ *                   type: integer
+ *                   example: 2
+ *                   description: Quantidade de produtos nos favoritos
+ *                 dados:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Tarefa'
+ *               example:
+ *                 sucesso: true
+ *                 quantidade: 2
+ *                 dados:
+ *                   - id: 1
+ *                     name: Avant Neo LED Smart 10W RGB
+ *                     preco: "29,75"
+ *                   - id: 3
+ *                     name: Lâmpada LED Padrão 9W
+ *                     preco: "15,50"
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Erro'
+ */
+
 import { Router } from 'express';
-import { } from '../controllers/bulbeControllers.js';
+import { listarFavoritos } from '../controllers/bulbeControllers.js';
 const router = Router();
 
-router.get('/', );
-
-
+router.get('/favoritos', listarFavoritos);
 
 export default router;
