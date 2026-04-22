@@ -52,6 +52,46 @@ import { Router } from 'express';
 import { removerFavoritos, selecionarEntrega } from '../controllers/bulbeControllers.js';
 const router = Router();
 
+/**
+ * @swagger
+ * /api/v1/favoritos/{id}:
+ *   delete:
+ *     summary: Remove um item da lista de favoritos
+ *     description: Remove um produto dos favoritos pelo seu ID.
+ *     tags:
+ *       - Favoritos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do produto a ser removido
+ *         example: 3
+ *     responses:
+ *       204:
+ *         description: Produto removido com sucesso (sem conteúdo)
+ *       400:
+ *         description: O ID informado não é um número
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 erro:
+ *                   type: string
+ *                   example: "O id deve ser um número"
+ *       404:
+ *         description: Produto não encontrado nos favoritos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 erro:
+ *                   type: string
+ *                   example: "O produto com id 3 não está nos favoritos"
+ */
 router.delete('/:id', removerFavoritos );
 
 /**
