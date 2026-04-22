@@ -1,0 +1,1 @@
+import { bulbeprodutos, getProximoId } from '../data/bulbe.js';
