@@ -49,10 +49,11 @@
  *           example: Campo obrigatório "name" faltando.
  */
 import { Router } from 'express';
-import { removerFavoritos } from '../controllers/bulbeControllers.js';
+import { removerFavoritos, selecionarEntrega } from '../controllers/bulbeControllers.js';
 const router = Router();
 
 router.delete('/:id', removerFavoritos );
+router.post('/', selecionarEntrega);
 
 
 
