@@ -98,10 +98,87 @@
  *               $ref: '#/components/schemas/Erro'
  */
 
+/**
+ * @openapi
+ * /carrinho/itens/{produtoId}:
+ *   delete:
+ *     summary: Remover item específico do carrinho
+ *     description: |
+ *       Remove um produto específico do carrinho pelo seu ID.
+ *       Não afeta outros itens do carrinho.
+ *       **RF-07**: Remover item específico do carrinho.
+ *     operationId: removerItemCarrinho
+ *     tags:
+ *       - Carrinho
+ *     parameters:
+ *       - name: produtoId
+ *         in: path
+ *         required: true
+ *         description: ID do produto a remover
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Item removido com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 sucesso:
+ *                   type: boolean
+ *                   example: true
+ *                 mensagem:
+ *                   type: string
+ *                   example: "Produto com ID 1 removido do carrinho com sucesso"
+ *                 carrinhoAtualizado:
+ *                   type: array
+ *                   description: Carrinho atualizado após remoção
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       preco:
+ *                         type: string
+ *                       quantidade:
+ *                         type: integer
+ *       400:
+ *         description: ID do produto inválido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 erro:
+ *                   type: string
+ *                   example: "ID do produto inválido. Deve ser um número."
+ *       404:
+ *         description: Produto não encontrado no carrinho
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 erro:
+ *                   type: string
+ *                   example: "Produto com ID 1 não encontrado no carrinho"
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Erro'
+ */
+
 import { Router } from 'express';
-import { listarFavoritos } from '../controllers/bulbeControllers.js';
+import { listarFavoritos, removerItemCarrinho } from '../controllers/bulbeControllers.js';
 const router = Router();
 
 router.get('/favoritos', listarFavoritos);
+router.delete('/carrinho/itens/:produtoId', removerItemCarrinho);
 
 export default router;
