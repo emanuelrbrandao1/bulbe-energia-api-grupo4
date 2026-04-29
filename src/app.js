@@ -6,6 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bulbeRouter from './routes/bulbe.js';
+import produtosRouter from './routes/produtos.js';
 
 // Em ESM não existe __dirname — reconstruímos a partir de import.meta.url
 const __filename = fileURLToPath(import.meta.url);
@@ -66,6 +67,7 @@ app.get('/api-docs.json', (req, res) => {
 
 // Rotas de negócio
 app.use('/api/v1/bulbe', bulbeRouter);
+app.use('/api/v1/produtos', produtosRouter);
 
 // Health check
 app.get('/', (req, res) => {
