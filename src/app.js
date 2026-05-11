@@ -7,6 +7,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bulbeRouter from './routes/bulbe.js';
 import produtosRouter from './routes/produtos.js';
+import gRouter from './routes/g.js';
 import hRouter from './routes/h.js';
 import carrinhoRouter from './routes/b.js';
 
@@ -70,6 +71,7 @@ app.get('/api-docs.json', (req, res) => {
 // Rotas de negócio
 app.use('/api/v1/bulbe', bulbeRouter);
 app.use('/api/v1/produtos', produtosRouter);
+app.use('/api/v1/produtos', gRouter);
 app.use('/api/v1/carrinho', hRouter);
 app.use('/api/v1/carrinho', carrinhoRouter);
 
