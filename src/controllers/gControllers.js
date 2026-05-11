@@ -1,5 +1,5 @@
 // src/controllers/gControllers.js
-import { produtos } from '../data/g.js';
+import { produtos, carrinho } from '../data/g.js';
 
 // Buscar produto por ID [US-02]
 export const buscarProdutoPorId = (req, res) => {
@@ -16,4 +16,23 @@ export const buscarProdutoPorId = (req, res) => {
   }
 
   return res.status(200).json(produto);
+};
+
+// Atualizar quantidade de item no carrinho [RF-05]
+export const atualizarQuantidadeItem = (req, res) => {
+  const produtoId = parseInt(req.params.produtoId, 10);
+  const { quantidade } = req.body;
+
+  if (!Number.isInteger(quantidade) || quantidade < 1) {
+    return res.status(422).json({ erro: 'O campo "quantidade" deve ser um número inteiro maior que 0.' });
+  }
+
+  const item = carrinho.find((i) => i.produtoId === produtoId);
+
+  if (!item) {
+    return res.status(404).json({ erro: `Item com produtoId ${produtoId} não encontrado no carrinho.` });
+  }
+
+  item.quantidade = quantidade;
+  return res.status(200).json(item);
 };
