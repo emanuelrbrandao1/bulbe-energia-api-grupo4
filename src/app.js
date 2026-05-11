@@ -7,7 +7,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bulbeRouter from './routes/bulbe.js';
 import produtosRouter from './routes/produtos.js';
-import gRouter from './routes/g.js';
+import gRouter, { gCarrinhoRouter } from './routes/g.js';
 import hRouter from './routes/h.js';
 import carrinhoRouter from './routes/b.js';
 import eRouter from './routes/e.js';
@@ -77,6 +77,7 @@ app.use('/api/v1/produtos', gRouter);
 app.use('/api/v1/carrinho', hRouter);
 app.use('/api/v1/carrinho', carrinhoRouter);
 app.use('/api/v1/carrinho', eRouter);
+app.use('/api/v1/carrinho', gCarrinhoRouter);
 app.use('/api/v1/favoritos', hjRouter);
 
 // Health check
