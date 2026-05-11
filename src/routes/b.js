@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { getCarrinho } from '../controllers/bControllers.js';
-// TODO: descomentar quando US-23 (infra JWT) for mergeada
-// import { autenticarJWT } from '../middlewares/autenticar.js';
+import { autenticarJWT } from '../middleware/auth.js';
 
 const router = Router();
 
