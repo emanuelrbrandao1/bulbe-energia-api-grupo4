@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import bulbeRouter from './routes/bulbe.js';
 import produtosRouter from './routes/produtos.js';
 import hRouter from './routes/h.js';
+import carrinhoRouter from './routes/b.js';
 
 // Em ESM não existe __dirname — reconstruímos a partir de import.meta.url
 const __filename = fileURLToPath(import.meta.url);
@@ -70,6 +71,7 @@ app.get('/api-docs.json', (req, res) => {
 app.use('/api/v1/bulbe', bulbeRouter);
 app.use('/api/v1/produtos', produtosRouter);
 app.use('/api/v1/carrinho', hRouter);
+app.use('/api/v1/carrinho', carrinhoRouter);
 
 // Health check
 app.get('/', (req, res) => {
