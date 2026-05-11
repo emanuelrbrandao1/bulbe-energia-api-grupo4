@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { getCarrinho } from '../controllers/bController.js';
-import { autenticarJWT } from '../middleware/auth.js';
+import { getCarrinho } from '../controllers/bControllers.js';
+// TODO: descomentar quando US-23 (infra JWT) for mergeada
+// import { autenticarJWT } from '../middlewares/autenticar.js';
 
 const router = Router();
 
@@ -40,6 +41,7 @@ const router = Router();
  *       500:
  *         description: Erro interno no servidor
  */
-router.get('/', autenticarJWT, getCarrinho);
+// TODO: readicionar autenticarJWT como middleware quando US-23 for mergeada
+router.get('/', getCarrinho);
 
 export default router;
