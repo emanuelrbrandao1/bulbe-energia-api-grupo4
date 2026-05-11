@@ -1,36 +1,58 @@
-// src/routes/j.js
-import { Router } from 'express';
-import { limparCarrinho } from '../controllers/jControllers.js';
-
-const router = Router();
+const express = require('express');
+const router = express.Router();
+const jControllers = require('../controllers/jControllers');
 
 /**
  * @openapi
- * /carrinho:
- *   delete:
- *     summary: Limpar todo o carrinho
- *     description: Remove todos os itens do carrinho do usuário autenticado de uma só vez.
- *     tags:
- *       - Carrinho
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Carrinho limpo com sucesso.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensagem:
- *                   type: string
- *                 carrinho:
- *                   type: array
- *                   items: {}
- *                   example: []
- *       401:
- *         description: Não autorizado (token JWT ausente ou inválido).
+ * /api/v1/carrinho:
+ * delete:
+ * summary: [US-08] Limpar todo o carrinho
+ * description: Remove todos os itens do carrinho do usuário autenticado de uma vez.
+ * tags: [Carrinho]
+ * security:
+ * - jwt: []
+ * responses:
+ * 200:
+ * description: Responde 200 após limpar e retorna carrinho vazio.
+ * content:
+ * application/json:
+ * schema:
+ * type: object
+ * properties:
+ * mensagem: { type: string }
+ * itens: { type: array, example: [] }
  */
-router.delete('/', limparCarrinho);
+router.delete('/carrinho', jControllers.limparCarrinho);
 
-export default router;
+/**
+ * @openapi
+ * /api/v1/pedidos/endereco:
+ * post:
+ * summary: [US-13] Salvar endereço de entrega do pedido
+ * description: Salva o endereço e o associa ao pedido antes do pagamento.
+ * tags: [Pedidos]
+ * security:
+ * - jwt: []
+ * requestBody:
+ * required: true
+ * content:
+ * application/json:
+ * schema:
+ * type: object
+ * required: [cep, logradouro, numero]
+ * properties:
+ * cep: { type: string }
+ * logradouro: { type: string }
+ * numero: { type: string }
+ * complemento: { type: string }
+ * responses:
+ * 201:
+ * description: Endereço salvo com sucesso.
+ * 422:
+ * description: Campos obrigatórios (cep, logradouro, numero) ausentes.
+ * 401:
+ * description: JWT inválido ou ausente.
+ */
+router.post('/pedidos/endereco', jControllers.salvarEndereco);
+
+module.exports = router;
