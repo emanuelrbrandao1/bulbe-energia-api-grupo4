@@ -1,5 +1,7 @@
 // src/controllers/hControllers.js
 import { carrinho } from '../data/h.js';
+import { favoritos } from '../data/hj.js';
+import { produtos } from '../data/produtos.js';
 
 // Remover item específico do carrinho [RF-07]
 export const removerItemCarrinho = (req, res) => {
@@ -21,4 +23,20 @@ export const removerItemCarrinho = (req, res) => {
     itemRemovido,
     carrinhoAtualizado: carrinho,
   });
+};
+
+// Listar favoritos do usuário autenticado [RF-09]
+export const listarFavoritos = (req, res) => {
+  const itensFavoritos = favoritos.map(({ produtoId }) => {
+    const produto = produtos.find(p => p.id === produtoId);
+    if (!produto) return null;
+    return {
+      produtoId: produto.id,
+      nome: produto.nome,
+      imagem: produto.imagem,
+      preco: produto.preco,
+    };
+  }).filter(Boolean);
+
+  return res.status(200).json({ favoritos: itensFavoritos });
 };

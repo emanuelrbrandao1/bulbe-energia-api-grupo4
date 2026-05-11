@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getCarrinho } from '../controllers/bController.js';
+import { getCarrinho } from '../controllers/bControllers.js';
 import { autenticarJWT } from '../middleware/auth.js';
 
 const router = Router();
