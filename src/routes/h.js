@@ -40,6 +40,7 @@
  *           example: Item com produtoId 999 não encontrado no carrinho.
  */
 import { Router } from 'express';
+import { autenticarJWT } from '../middleware/auth.js';
 import { removerItemCarrinho } from '../controllers/hControllers.js';
 
 const router = Router();
@@ -86,6 +87,6 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErroCarrinho'
  */
-router.delete('/itens/:produtoId', removerItemCarrinho);
+router.delete('/itens/:produtoId', autenticarJWT, removerItemCarrinho);
 
 export default router;
