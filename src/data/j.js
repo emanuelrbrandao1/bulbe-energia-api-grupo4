@@ -1,11 +1,9 @@
-let carrinhos = {};
+// src/data/j.js
+// Carrinhos por usuário em memória — reiniciados a cada restart.
 
-const limparCarrinhoNoBanco = async (usuarioId) => {
-    carrinhos[usuarioId] = [];
-    
-    return carrinhos[usuarioId];
-};
+const carrinhos = {};
 
-module.exports = {
-    limparCarrinhoNoBanco
+export const limparCarrinhoNoBanco = (usuarioId) => {
+  carrinhos[usuarioId] = [];
+  return carrinhos[usuarioId];
 };
