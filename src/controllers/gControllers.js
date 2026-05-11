@@ -1,3 +1,6 @@
+// src/controllers/gControllers.js
+import { produtos } from '../data/g.js';
+
 // Buscar produto por ID [US-02]
 export const buscarProdutoPorId = (req, res) => {
   const id = parseInt(req.params.id, 10);
