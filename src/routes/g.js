@@ -1,6 +1,45 @@
 // src/routes/g.js
 /**
  * @openapi
+ * /produtos/recomendacoes:
+ *   get:
+ *     summary: Retorna produtos recomendados após confirmação do pedido
+ *     description: Busca até 4 produtos que não estão no pedido informado, para exibição na seção "Você também pode gostar" da tela de confirmação.
+ *     tags:
+ *       - Produtos
+ *     parameters:
+ *       - in: query
+ *         name: pedidoId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Identificador único do pedido confirmado.
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Lista de até 4 produtos recomendados (excluindo os já presentes no pedido).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               maxItems: 4
+ *               items:
+ *                 $ref: '#/components/schemas/Produto'
+ *       400:
+ *         description: Parâmetro pedidoId inválido (não é um inteiro).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Erro'
+ *       404:
+ *         description: Pedido não encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Erro'
+ */
+/**
+ * @openapi
  * /produtos/{id}:
  *   get:
  *     summary: Busca um produto pelo ID
@@ -80,9 +119,10 @@
  *               $ref: '#/components/schemas/ErroCarrinho'
  */
 import { Router } from 'express';
-import { buscarProdutoPorId, atualizarQuantidadeItem } from '../controllers/gControllers.js';
+import { buscarProdutoPorId, atualizarQuantidadeItem, buscarRecomendacoes } from '../controllers/gControllers.js';
 
 const router = Router();
+router.get('/recomendacoes', buscarRecomendacoes);
 router.get('/:id', buscarProdutoPorId);
 
 export const gCarrinhoRouter = Router();
