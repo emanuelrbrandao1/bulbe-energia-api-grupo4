@@ -37,7 +37,7 @@ export const selecionarEntrega = (req, res) => {
 //Processar pagamento do pedido[US-15]
 export const processarPagamento = (req,res) => {
 
-    const {metodo,nome_titular,num_cartao,validade,cvv} = req.body;
+    const {metodo,nome_titular,num_cartao,validade,cod_seguranca} = req.body;
     const idPedido = parseInt(req.params.id,10);
 
     if(isNaN(idPedido)){
@@ -55,7 +55,7 @@ export const processarPagamento = (req,res) => {
     }
 
     if(formaPagamento.precisaCartao === true){
-        if(!nome_titular || !num_cartao || !validade || !cvv){
+        if(!nome_titular || !num_cartao || !validade || !cod_seguranca){
             return res.status(422).json({
                 erro:"Dados do cartão obrigatórios faltando"
             });
