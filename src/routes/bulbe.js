@@ -54,8 +54,10 @@ const router = Router();
 
 /**
  * @openapi
- * /api/v1/favoritos/{id}:
+ * /bulbe/{id}:
  *   delete:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Remove um item da lista de favoritos
  *     description: Remove um produto dos favoritos pelo seu ID.
  *     tags:
@@ -98,6 +100,8 @@ router.delete('/:id', removerFavoritos );
  * @openapi
  * /entrega:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Seleciona o tipo de entrega
  *     description: Retorna o prazo estimado e o custo da entrega escolhida.
  *     tags:
@@ -133,8 +137,10 @@ router.delete('/:id', removerFavoritos );
 router.post('/', selecionarEntrega);
 /**
  * @openapi
- * /pedidos/{id}/pagamento:
+ * /bulbe/pedidos/{id}/pagamento:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Processa o pagamento de um pedido
  *     description: Permite escolher a forma de pagamento entre pix, crédito ou débito.
  *     tags:
@@ -188,10 +194,8 @@ router.post('/', selecionarEntrega);
  *                       type: string
  *                     status:
  *                       type: string
- *
  *       400:
  *         description: ID do pedido inválido
- *
  *       422:
  *         description: Método de pagamento inválido ou dados do cartão ausentes
  */
@@ -199,8 +203,10 @@ router.post('/pedidos/:id/pagamento', processarPagamento );
 
 /**
  * @openapi
- * /rastreamento/{pedidoId}:
+ * /bulbe/pedidos/{pedidoId}/rastreamento:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Consulta o rastreamento de um pedido
  *     description: Retorna o status atual e o histórico de rastreamento do pedido.
  *     tags:
@@ -238,7 +244,6 @@ router.post('/pedidos/:id/pagamento', processarPagamento );
  *                       descricao:
  *                         type: string
  *                         example: "Pedido saiu para entrega"
- *
  *       400:
  *         description: O id deve ser um número
  *         content:
@@ -249,7 +254,6 @@ router.post('/pedidos/:id/pagamento', processarPagamento );
  *                 erro:
  *                   type: string
  *                   example: "O id deve ser um número"
- *
  *       404:
  *         description: Pedido não encontrado
  *         content:
