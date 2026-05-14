@@ -15,6 +15,21 @@ export const tiposEntrega = {
         custoEntrega: 25
     }
 };
+export const formasPagamento = [
+    {
+        tipo: "pix",
+        precisaCartao: false
+    },
+    {
+        tipo: "credito",
+        precisaCartao: true
+    },
+    {
+        tipo: "debito",
+        precisaCartao: true
+    }
+];
+export const pagamentos = [];
 
 let proximoId = 2;
 export const getProximoId = () => proximoId++;

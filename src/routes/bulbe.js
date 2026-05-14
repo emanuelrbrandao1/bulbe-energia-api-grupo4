@@ -49,7 +49,7 @@
  *           example: Campo obrigatório "name" faltando.
  */
 import { Router } from 'express';
-import { removerFavoritos, selecionarEntrega } from '../controllers/bulbeControllers.js';
+import { processarPagamento, removerFavoritos, selecionarEntrega } from '../controllers/bulbeControllers.js';
 const router = Router();
 
 /**
@@ -131,6 +131,8 @@ router.delete('/:id', removerFavoritos );
  *         description: Tipo de entrega inválido
  */
 router.post('/', selecionarEntrega);
+
+router.post('/pedidos/:id/pagamento', processarPagamento );
 
 
 
