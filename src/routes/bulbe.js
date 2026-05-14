@@ -49,7 +49,7 @@
  *           example: Campo obrigatório "name" faltando.
  */
 import { Router } from 'express';
-import { processarPagamento, removerFavoritos, selecionarEntrega } from '../controllers/bulbeControllers.js';
+import { processarPagamento, removerFavoritos, selecionarEntrega, rastrearPedido } from '../controllers/bulbeControllers.js';
 const router = Router();
 
 /**
@@ -197,6 +197,71 @@ router.post('/', selecionarEntrega);
  */
 router.post('/pedidos/:id/pagamento', processarPagamento );
 
+/**
+ * @openapi
+ * /rastreamento/{pedidoId}:
+ *   get:
+ *     summary: Consulta o rastreamento de um pedido
+ *     description: Retorna o status atual e o histórico de rastreamento do pedido.
+ *     tags:
+ *       - Rastreamento
+ *     parameters:
+ *       - in: path
+ *         name: pedidoId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do pedido
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Rastreamento encontrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 pedidoId:
+ *                   type: integer
+ *                   example: 1
+ *                 status:
+ *                   type: string
+ *                   example: em_transito
+ *                 historicoStatus:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       data:
+ *                         type: string
+ *                         example: "2026-05-12 14:00"
+ *                       descricao:
+ *                         type: string
+ *                         example: "Pedido saiu para entrega"
+ *
+ *       400:
+ *         description: O id deve ser um número
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 erro:
+ *                   type: string
+ *                   example: "O id deve ser um número"
+ *
+ *       404:
+ *         description: Pedido não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 erro:
+ *                   type: string
+ *                   example: "Pedido não encontrado"
+ */
+router.get('/pedidos/:pedidoId/rastreamento', rastrearPedido );
 
 
 export default router;

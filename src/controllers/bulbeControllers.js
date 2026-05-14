@@ -1,4 +1,4 @@
-import { bulbeprodutos, getProximoId, tiposEntrega, formasPagamento, pagamentos } from '../data/bulbe.js';
+import { bulbeprodutos, getProximoId, tiposEntrega, formasPagamento, pagamentos, rastreamentos } from '../data/bulbe.js';
 //Remover item dos favoritos [US-11]
 export const removerFavoritos = (req,res)=>{
     const id = parseInt(req.params.id,10);
@@ -14,7 +14,7 @@ export const removerFavoritos = (req,res)=>{
         });
     }
     bulbeprodutos.splice(index, 1);
-    res.status(204).send();
+    return res.status(204).send();
 };
 
 //Selecionar a forma de pagamento[US-14]
@@ -62,9 +62,7 @@ export const processarPagamento = (req,res) => {
         }
     }
 
-    // simulação aprovação
     const status = "aprovado";
-
     const pagamento = {
         idPedido,
         metodo,
@@ -72,6 +70,21 @@ export const processarPagamento = (req,res) => {
     };
 
     pagamentos.push(pagamento);
-
     return res.status(200).json(pagamento);
+};
+//Rastrear pedido[US-20]
+export const rastrearPedido = (req,res) => {
+    const pedidoId = parseInt(req.params.pedidoId, 10);
+    if(isNaN(pedidoId)){
+        return res.status(400).json({
+            erro:`O id deve ser um número.`
+        });
+    }
+    const rastreamento = rastreamentos.find((pedido) => pedido.pedidoId === pedidoId);
+    if(!rastreamento){
+        return res.status(404).json({
+            erro:`Pedido não encontrado.`
+        });
+    }
+    return res.status(200).json(rastreamento);
 };
