@@ -2,40 +2,43 @@ const express = require('express');
 const router = express.Router();
 const jControllers = require('../controllers/jControllers');
 
-// Rota US-08: Limpar Carrinho
 router.delete('/carrinho', jControllers.limparCarrinho);
-
-// Rota US-13: Salvar Endereço
 router.post('/pedidos/endereco', jControllers.salvarEndereco);
+router.post('/favoritos', jControllers.favoritarProduto);
 
 /**
  * @openapi
- * /api/v1/favoritos:
- * post:
- * summary: [US-10] Adicionar produto aos favoritos
- * description: Adiciona um produto à lista de interesses do usuário.
- * tags: [Favoritos]
- * security:
- * - jwt: []
- * requestBody:
+ * /api/v1/enderecos/cep/{cep}:
+ * get:
+ * summary: [US-12] Consultar endereço por CEP
+ * description: Busca endereço via API externa (ViaCEP) com timeout de 5s. Não exige autenticação.
+ * tags: [Endereços]
+ * parameters:
+ * - in: path
+ * name: cep
  * required: true
+ * schema:
+ * type: string
+ * description: CEP com 8 dígitos.
+ * responses:
+ * 200:
+ * description: Endereço encontrado.
  * content:
  * application/json:
  * schema:
  * type: object
- * required: [produtoId]
  * properties:
- * produtoId: { type: integer }
- * responses:
- * 201:
- * description: Responde 201 ao favoritar com sucesso.
- * 200:
- * description: Retorna 200 se o produto já estava nos favoritos (idempotente).
+ * logradouro: { type: string }
+ * bairro: { type: string }
+ * localidade: { type: string }
+ * uf: { type: string }
  * 404:
- * description: Retorna 404 se o produto não existir no sistema.
- * 401:
- * description: Não autorizado (Exige JWT).
+ * description: CEP não encontrado.
+ * 422:
+ * description: CEP inválido.
+ * 504:
+ * description: Timeout na consulta externa.
  */
-router.post('/favoritos', jControllers.favoritarProduto);
+router.get('/enderecos/cep/:cep', jControllers.consultarCep);
 
 module.exports = router;
