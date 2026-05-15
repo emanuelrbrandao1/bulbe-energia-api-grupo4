@@ -12,6 +12,7 @@ import hRouter from './routes/h.js';
 import carrinhoRouter from './routes/b.js';
 import eRouter from './routes/e.js';
 import hjRouter from './routes/hj.js';
+import authRouter from './routes/b.js';
 
 // Em ESM não existe __dirname — reconstruímos a partir de import.meta.url
 const __filename = fileURLToPath(import.meta.url);
@@ -79,6 +80,8 @@ app.use('/api/v1/carrinho', carrinhoRouter);
 app.use('/api/v1/carrinho', eRouter);
 app.use('/api/v1/carrinho', gCarrinhoRouter);
 app.use('/api/v1/favoritos', hjRouter);
+app.use('/api/v1/auth', authRouter);
+
 
 // Health check
 app.get('/', (req, res) => {

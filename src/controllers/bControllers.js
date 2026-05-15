@@ -1,4 +1,6 @@
 import { carrinho } from '../data/b.js';
+import jwt from 'jsonwebtoken';
+import { usuarios } from '../data/b.js';
 import { produtos } from '../data/produtos.js';
 
 export async function getCarrinho(req, res) {
@@ -51,4 +53,40 @@ export async function getCarrinho(req, res) {
   } catch (error) {
     return res.status(500).json({ mensagem: 'Erro ao buscar o carrinho.' });
   }
+
+  const SEGREDO = 'bulbe-segredo-jwt'; // em produção, usar variável de ambiente
+
+export function login(req, res) {
+  try {
+    const { email, senha } = req.body;
+
+    // 422 — campos ausentes
+    if (!email || !senha) {
+      return res.status(422).json({ mensagem: 'Email e senha são obrigatórios.' });
+    }
+
+    // 401 — usuário não encontrado ou senha errada
+    const usuario = usuarios.find(u => u.email === email && u.senha === senha);
+    if (!usuario) {
+      return res.status(401).json({ mensagem: 'Email ou senha inválidos.' });
+    }
+
+    // gera o token com expiração de 24h
+    const token = jwt.sign(
+      { id: usuario.id, email: usuario.email },
+      SEGREDO,
+      { expiresIn: '24h' }
+    );
+
+    return res.status(200).json({
+      token: token,
+      usuarioId: usuario.id,
+      nome: usuario.nome,
+      email: usuario.email,
+    });
+
+  } catch (error) {
+    return res.status(500).json({ mensagem: 'Erro ao realizar login.' });
+  }
+}
 }
