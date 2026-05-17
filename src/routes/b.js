@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { getCarrinho } from '../controllers/bControllers.js';
-import { autenticarJWT } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -40,6 +39,6 @@ const router = Router();
  *       500:
  *         description: Erro interno no servidor
  */
-router.get('/', autenticarJWT, getCarrinho);
+router.get('/', getCarrinho);
 
 export default router;
