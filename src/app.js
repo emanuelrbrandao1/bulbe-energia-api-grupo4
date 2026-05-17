@@ -10,7 +10,7 @@ import produtosRouter from './routes/produtos.js';
 import gRouter, { gCarrinhoRouter } from './routes/g.js';
 import hRouter, { hPedidosRouter } from './routes/h.js';
 import carrinhoRouter from './routes/b.js';
-import eRouter from './routes/e.js';
+import eRouter, { ePedidosRouter } from './routes/e.js';
 import hjRouter from './routes/hj.js';
 import jRouter, { jPublicRouter } from './routes/j.js';
 import authRouter from './routes/auth.js';
@@ -95,6 +95,7 @@ app.use('/api/v1/carrinho', autenticarJWT, eRouter);
 app.use('/api/v1/carrinho', autenticarJWT, gCarrinhoRouter);
 app.use('/api/v1/favoritos', autenticarJWT, hjRouter);
 app.use('/api/v1/pedidos', autenticarJWT, hPedidosRouter);
+app.use('/api/v1/pedidos', autenticarJWT, ePedidosRouter);
 
 // Rotas públicas (sem JWT) — montadas em /api/v1
 app.use('/api/v1', jPublicRouter);
