@@ -12,6 +12,7 @@ import hRouter from './routes/h.js';
 import carrinhoRouter from './routes/b.js';
 import eRouter from './routes/e.js';
 import hjRouter from './routes/hj.js';
+import jRouter, { jPublicRouter } from './routes/j.js';
 import { autenticarJWT } from './middleware/auth.js';
 
 // Em ESM não existe __dirname — reconstruímos a partir de import.meta.url
@@ -89,6 +90,11 @@ app.use('/api/v1/carrinho',autenticarJWT, carrinhoRouter);
 app.use('/api/v1/carrinho',autenticarJWT, eRouter);
 app.use('/api/v1/carrinho',autenticarJWT, gCarrinhoRouter);
 app.use('/api/v1/favoritos',autenticarJWT, hjRouter);
+
+// Rotas públicas (sem JWT) — montadas em /api/v1
+app.use('/api/v1', jPublicRouter);
+// Rotas privadas do router j (favoritos POST, pedidos/endereco POST)
+app.use('/api/v1', autenticarJWT, jRouter);
 
 // Health check
 app.get('/', (req, res) => {
