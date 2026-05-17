@@ -1,5 +1,5 @@
 // src/controllers/hControllers.js
-import { carrinho } from '../data/h.js';
+import { carrinho, pedidos } from '../data/h.js';
 import { favoritos } from '../data/hj.js';
 import { produtos } from '../data/produtos.js';
 
@@ -101,6 +101,23 @@ export const limparCarrinho = (req, res) => {
     mensagem: 'Carrinho limpo com sucesso.',
     carrinho: [],
   });
+};
+
+// Buscar pedido por ID [RF-17]
+export const buscarPedidoPorId = (req, res) => {
+  const idNumerado = parseInt(req.params.id, 10);
+
+  const pedido = pedidos.find(p => p.pedidoId === idNumerado);
+  if (!pedido) {
+    return res.status(404).json({ erro: `Pedido ${idNumerado} não encontrado.` });
+  }
+
+  if (pedido.usuarioId !== req.usuario.id) {
+    return res.status(403).json({ erro: 'Acesso negado. Este pedido não pertence ao usuário autenticado.' });
+  }
+
+  const { usuarioId, ...dadosPedido } = pedido;
+  return res.status(200).json(dadosPedido);
 };
 
 // Listar favoritos do usuário autenticado [RF-09]
