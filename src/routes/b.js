@@ -40,7 +40,6 @@ const router = Router();
  *       500:
  *         description: Erro interno no servidor
  */
-// TODO: readicionar autenticarJWT como middleware quando US-23 for mergeada
-router.get('/', getCarrinho);
+router.get('/', autenticarJWT, getCarrinho);
 
 export default router;

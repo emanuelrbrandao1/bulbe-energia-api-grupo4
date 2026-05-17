@@ -1,3 +1,4 @@
+
 // src/routes/h.js
 /**
  * @openapi
@@ -41,9 +42,136 @@
  */
 import { Router } from 'express';
 import { autenticarJWT } from '../middleware/auth.js';
-import { removerItemCarrinho } from '../controllers/hControllers.js';
+import { adicionarItemCarrinho, atualizarItemCarrinho, listarCarrinho, removerItemCarrinho, limparCarrinho } from '../controllers/hControllers.js';
 
 const router = Router();
+
+/**
+ * @openapi
+ * /carrinho/itens:
+ *   post:
+ *     summary: Adiciona um item ao carrinho
+ *     description: Adiciona um novo produto ao carrinho ou aumenta a quantidade se já existe.
+ *     tags:
+ *       - Carrinho
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - produtoId
+ *               - quantidade
+ *             properties:
+ *               produtoId:
+ *                 type: integer
+ *                 example: 1
+ *               quantidade:
+ *                 type: integer
+ *                 example: 2
+ *     responses:
+ *       201:
+ *         description: Item adicionado com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensagem:
+ *                   type: string
+ *                 carrinhoAtualizado:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/ItemCarrinho'
+ *       401:
+ *         description: Token JWT ausente ou inválido
+ */
+router.post('/itens', autenticarJWT, adicionarItemCarrinho);
+
+/**
+ * @openapi
+ * /carrinho/itens/{produtoId}:
+ *   patch:
+ *     summary: Atualiza a quantidade de um item no carrinho
+ *     description: Modifica a quantidade de um produto específico do carrinho.
+ *     tags:
+ *       - Carrinho
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: produtoId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID único do produto no carrinho.
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - quantidade
+ *             properties:
+ *               quantidade:
+ *                 type: integer
+ *                 example: 5
+ *     responses:
+ *       200:
+ *         description: Item atualizado com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensagem:
+ *                   type: string
+ *                 carrinhoAtualizado:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/ItemCarrinho'
+ *       401:
+ *         description: Token JWT ausente ou inválido
+ *       404:
+ *         description: Item não encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErroCarrinho'
+ */
+router.patch('/itens/:produtoId', autenticarJWT, atualizarItemCarrinho);
+
+/**
+ * @openapi
+ * /carrinho:
+ *   get:
+ *     summary: Retorna todos os itens do carrinho
+ *     description: Lista todos os itens atualmente no carrinho do usuário autenticado.
+ *     tags:
+ *       - Carrinho
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de itens do carrinho.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 itens:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/ItemCarrinho'
+ *       401:
+ *         description: Token JWT ausente ou inválido
+ */
+router.get('/', autenticarJWT, listarCarrinho);
 
 /**
  * @openapi
@@ -73,13 +201,14 @@ const router = Router();
  *               properties:
  *                 mensagem:
  *                   type: string
- *                   example: Item removido com sucesso do carrinho.
  *                 itemRemovido:
  *                   $ref: '#/components/schemas/ItemCarrinho'
  *                 carrinhoAtualizado:
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/ItemCarrinho'
+ *       401:
+ *         description: Token JWT ausente ou inválido
  *       404:
  *         description: Item não encontrado no carrinho.
  *         content:
@@ -88,5 +217,33 @@ const router = Router();
  *               $ref: '#/components/schemas/ErroCarrinho'
  */
 router.delete('/itens/:produtoId', autenticarJWT, removerItemCarrinho);
+
+/**
+ * @openapi
+ * /carrinho:
+ *   delete:
+ *     summary: Limpa o carrinho completamente
+ *     description: Remove todos os itens do carrinho do usuário autenticado de uma só vez.
+ *     tags:
+ *       - Carrinho
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Carrinho limpo com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensagem:
+ *                   type: string
+ *                 carrinho:
+ *                   type: array
+ *                   items: {}
+ *       401:
+ *         description: Token JWT ausente ou inválido
+ */
+router.delete('/', autenticarJWT, limparCarrinho);
 
 export default router;
