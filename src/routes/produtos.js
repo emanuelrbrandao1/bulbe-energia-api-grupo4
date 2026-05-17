@@ -63,7 +63,7 @@
  *           example: Categoria "invalida" não encontrada.
  */
 import { Router } from 'express';
-import { listarProdutos } from '../controllers/produtosController.js';
+import { listarProdutos, getProdutosDestaque } from '../controllers/produtosController.js';
 
 const router = Router();
 
@@ -102,4 +102,36 @@ const router = Router();
  */
 router.get('/', listarProdutos);
 
+/**
+ * @openapi
+ * /produtos/destaque:
+ *   get:
+ *     summary: Lista produtos em destaque ou mais vendidos
+ *     description: Retorna produtos filtrados por destaque ou maisVendido, ordenados por avaliação.
+ *     tags:
+ *       - Produtos
+ *     parameters:
+ *       - in: query
+ *         name: destaque
+ *         schema:
+ *           type: boolean
+ *         description: Filtra produtos em destaque
+ *       - in: query
+ *         name: maisVendido
+ *         schema:
+ *           type: boolean
+ *         description: Filtra produtos mais vendidos
+ *     responses:
+ *       200:
+ *         description: Lista de produtos filtrada e ordenada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Produto'
+ *       500:
+ *         description: Erro interno no servidor
+ */
+router.get('/destaque', getProdutosDestaque);
 export default router;

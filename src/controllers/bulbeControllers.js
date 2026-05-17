@@ -1,4 +1,4 @@
-import { bulbeprodutos, getProximoId, tiposEntrega } from '../data/bulbe.js';
+import { bulbeprodutos, getProximoId, tiposEntrega, formasPagamento, pagamentos, rastreamentos } from '../data/bulbe.js';
 //Remover item dos favoritos [US-11]
 export const removerFavoritos = (req,res)=>{
     const id = parseInt(req.params.id,10);
@@ -14,7 +14,7 @@ export const removerFavoritos = (req,res)=>{
         });
     }
     bulbeprodutos.splice(index, 1);
-    res.status(204).send();
+    return res.status(204).send();
 };
 
 //Selecionar a forma de pagamento[US-14]
@@ -33,4 +33,58 @@ export const selecionarEntrega = (req, res) => {
     };
 
     return res.status(200).json(entrega);
+};
+//Processar pagamento do pedido[US-15]
+export const processarPagamento = (req,res) => {
+
+    const {metodo,nome_titular,num_cartao,validade,cod_seguranca} = req.body;
+    const idPedido = parseInt(req.params.id,10);
+
+    if(isNaN(idPedido)){
+        return res.status(400).json({
+            erro:"Id do pedido inválido"
+        });
+    }
+
+    const formaPagamento = formasPagamento.find((forma) => forma.tipo === metodo);
+
+    if(!formaPagamento){
+        return res.status(422).json({
+            erro:"Método de pagamento inválido"
+        });
+    }
+
+    if(formaPagamento.precisaCartao === true){
+        if(!nome_titular || !num_cartao || !validade || !cod_seguranca){
+            return res.status(422).json({
+                erro:"Dados do cartão obrigatórios faltando"
+            });
+        }
+    }
+
+    const status = "aprovado";
+    const pagamento = {
+        idPedido,
+        metodo,
+        status
+    };
+
+    pagamentos.push(pagamento);
+    return res.status(200).json(pagamento);
+};
+//Rastrear pedido[US-20]
+export const rastrearPedido = (req,res) => {
+    const pedidoId = parseInt(req.params.pedidoId, 10);
+    if(isNaN(pedidoId)){
+        return res.status(400).json({
+            erro:`O id deve ser um número.`
+        });
+    }
+    const rastreamento = rastreamentos.find((pedido) => pedido.pedidoId === pedidoId);
+    if(!rastreamento){
+        return res.status(404).json({
+            erro:`Pedido não encontrado.`
+        });
+    }
+    return res.status(200).json(rastreamento);
 };

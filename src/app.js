@@ -7,9 +7,14 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bulbeRouter from './routes/bulbe.js';
 import produtosRouter from './routes/produtos.js';
-import gRouter from './routes/g.js';
+import gRouter, { gCarrinhoRouter } from './routes/g.js';
 import hRouter from './routes/h.js';
 import carrinhoRouter from './routes/b.js';
+import eRouter from './routes/e.js';
+import hjRouter from './routes/hj.js';
+import jRouter, { jPublicRouter } from './routes/j.js';
+import authRouter from './routes/auth.js';
+import { autenticarJWT } from './middleware/auth.js';
 
 // Em ESM não existe __dirname — reconstruímos a partir de import.meta.url
 const __filename = fileURLToPath(import.meta.url);
@@ -77,12 +82,23 @@ app.get('/api-docs.json', (req, res) => {
   res.json(swaggerDocument);
 });
 
-// Rotas de negócio
-app.use('/api/v1/bulbe', bulbeRouter);
-app.use('/api/v1/produtos', produtosRouter);
-app.use('/api/v1/produtos', gRouter);
-app.use('/api/v1/carrinho', hRouter);
-app.use('/api/v1/carrinho', carrinhoRouter);
+// Rotas públicas — não exigem token
+app.use('/api/v1/auth', authRouter);
+
+// Rotas de negócio — protegidas por JWT
+app.use('/api/v1/bulbe', autenticarJWT, bulbeRouter);
+app.use('/api/v1/produtos', autenticarJWT, produtosRouter);
+app.use('/api/v1/produtos', autenticarJWT, gRouter);
+app.use('/api/v1/carrinho', autenticarJWT, hRouter);
+app.use('/api/v1/carrinho', autenticarJWT, carrinhoRouter);
+app.use('/api/v1/carrinho', autenticarJWT, eRouter);
+app.use('/api/v1/carrinho', autenticarJWT, gCarrinhoRouter);
+app.use('/api/v1/favoritos', autenticarJWT, hjRouter);
+
+// Rotas públicas (sem JWT) — montadas em /api/v1
+app.use('/api/v1', jPublicRouter);
+// Rotas privadas do router j (favoritos POST, pedidos/endereco POST)
+app.use('/api/v1', autenticarJWT, jRouter);
 
 // Health check
 app.get('/', (req, res) => {

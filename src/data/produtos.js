@@ -1,6 +1,3 @@
-// src/data/produtos.js
-// Dados em memória — reiniciados a cada restart do servidor
-
 export const CATEGORIAS_VALIDAS = [
   'lampadas',
   'luminarias',
@@ -21,6 +18,8 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/avant-neo-rgb-detalhes.jpg',
     avaliacao: 4.7,
     totalAvaliacoes: 132,
+    destaque: true,     
+    maisVendido: true,  
   },
   {
     id: 2,
@@ -33,6 +32,8 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/led-9w-quente-detalhes.jpg',
     avaliacao: 4.5,
     totalAvaliacoes: 87,
+    destaque: false,    
+    maisVendido: false, 
   },
   {
     id: 3,
@@ -45,6 +46,8 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/pendente-industrial-detalhes.jpg',
     avaliacao: 4.8,
     totalAvaliacoes: 54,
+    destaque: true,     
+    maisVendido: false, 
   },
   {
     id: 4,
@@ -57,6 +60,8 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/luminaria-mesa-detalhes.jpg',
     avaliacao: 4.6,
     totalAvaliacoes: 41,
+    destaque: false,    
+    maisVendido: false, 
   },
   {
     id: 5,
@@ -69,6 +74,8 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/fita-led-rgb-detalhes.jpg',
     avaliacao: 4.4,
     totalAvaliacoes: 215,
+    destaque: false,    
+    maisVendido: true,  
   },
   {
     id: 6,
@@ -81,6 +88,8 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/fita-led-branca-detalhes.jpg',
     avaliacao: 4.3,
     totalAvaliacoes: 78,
+    destaque: false,    
+    maisVendido: false, 
   },
   {
     id: 7,
@@ -93,6 +102,8 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/soquete-e27-detalhes.jpg',
     avaliacao: 4.2,
     totalAvaliacoes: 33,
+    destaque: false,    
+    maisVendido: false, 
   },
   {
     id: 8,
@@ -105,6 +116,8 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/sensor-presenca-detalhes.jpg',
     avaliacao: 4.5,
     totalAvaliacoes: 62,
+    destaque: false,    
+    maisVendido: false, 
   },
   {
     id: 9,
@@ -117,6 +130,8 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/echo-dot-5-detalhes.jpg',
     avaliacao: 4.9,
     totalAvaliacoes: 421,
+    destaque: true,     
+    maisVendido: true,  
   },
   {
     id: 10,
@@ -129,5 +144,7 @@ export const produtos = [
     imagemDetalhes: 'https://exemplo.com/produtos/nest-mini-detalhes.jpg',
     avaliacao: 4.7,
     totalAvaliacoes: 287,
+    destaque: false,    
+    maisVendido: true,  
   },
 ];
