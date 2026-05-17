@@ -12,7 +12,8 @@ import hRouter from './routes/h.js';
 import carrinhoRouter from './routes/b.js';
 import eRouter from './routes/e.js';
 import hjRouter from './routes/hj.js';
-import authRouter from './routes/b.js';
+import authRouter from './routes/auth.js';
+import { autenticarJWT } from './middleware/auth.js';
 
 // Em ESM não existe __dirname — reconstruímos a partir de import.meta.url
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +39,15 @@ const swaggerOptions = {
         description: 'Servidor de desenvolvimento local',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   apis: [join(__dirname, 'routes', '*.js')],
 };
@@ -71,17 +81,18 @@ app.get('/api-docs.json', (req, res) => {
   res.json(swaggerDocument);
 });
 
-// Rotas de negócio
-app.use('/api/v1/bulbe', bulbeRouter);
-app.use('/api/v1/produtos', produtosRouter);
-app.use('/api/v1/produtos', gRouter);
-app.use('/api/v1/carrinho', hRouter);
-app.use('/api/v1/carrinho', carrinhoRouter);
-app.use('/api/v1/carrinho', eRouter);
-app.use('/api/v1/carrinho', gCarrinhoRouter);
-app.use('/api/v1/favoritos', hjRouter);
+// Rotas públicas — não exigem token
 app.use('/api/v1/auth', authRouter);
 
+// Rotas de negócio — protegidas por JWT
+app.use('/api/v1/bulbe', autenticarJWT, bulbeRouter);
+app.use('/api/v1/produtos', autenticarJWT, produtosRouter);
+app.use('/api/v1/produtos', autenticarJWT, gRouter);
+app.use('/api/v1/carrinho', autenticarJWT, hRouter);
+app.use('/api/v1/carrinho', autenticarJWT, carrinhoRouter);
+app.use('/api/v1/carrinho', autenticarJWT, eRouter);
+app.use('/api/v1/carrinho', autenticarJWT, gCarrinhoRouter);
+app.use('/api/v1/favoritos', autenticarJWT, hjRouter);
 
 // Health check
 app.get('/', (req, res) => {
