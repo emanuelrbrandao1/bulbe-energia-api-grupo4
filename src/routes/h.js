@@ -1,4 +1,4 @@
-
+﻿
 // src/routes/h.js
 /**
  * @openapi
@@ -42,7 +42,7 @@
  */
 import { Router } from 'express';
 import { autenticarJWT } from '../middleware/auth.js';
-import { adicionarItemCarrinho, atualizarItemCarrinho, listarCarrinho, removerItemCarrinho, limparCarrinho } from '../controllers/hControllers.js';
+import { adicionarItemCarrinho, atualizarItemCarrinho, listarCarrinho, removerItemCarrinho, limparCarrinho, buscarPedidoPorId } from '../controllers/hControllers.js';
 
 const router = Router();
 
@@ -247,3 +247,79 @@ router.delete('/itens/:produtoId', autenticarJWT, removerItemCarrinho);
 router.delete('/', autenticarJWT, limparCarrinho);
 
 export default router;
+
+// Router de pedidos [RF-17]
+export const hPedidosRouter = Router();
+
+/**
+ * @openapi
+ * /pedidos/{id}:
+ *   get:
+ *     summary: Busca pedido confirmado por ID
+ *     description: Retorna os dados completos de um pedido confirmado. Exige que o pedido pertença ao usuário autenticado.
+ *     tags:
+ *       - Pedidos
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do pedido.
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Dados completos do pedido.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 pedidoId:
+ *                   type: integer
+ *                   example: 1
+ *                 itens:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       produtoId:    { type: integer }
+ *                       nome:         { type: string }
+ *                       precoUnitario:{ type: number }
+ *                       quantidade:   { type: integer }
+ *                 enderecoEntrega:
+ *                   type: object
+ *                   properties:
+ *                     logradouro:  { type: string }
+ *                     numero:      { type: string }
+ *                     complemento: { type: string }
+ *                     bairro:      { type: string }
+ *                     localidade:  { type: string }
+ *                     uf:          { type: string }
+ *                     cep:         { type: string }
+ *                 formaEntrega:
+ *                   type: string
+ *                   example: PAC
+ *                 metodoPagamento:
+ *                   type: string
+ *                   example: cartao_credito
+ *                 valorTotal:
+ *                   type: number
+ *                   example: 259.70
+ *                 status:
+ *                   type: string
+ *                   example: confirmado
+ *                 dataCriacao:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2026-05-15T10:30:00.000Z"
+ *       401:
+ *         description: Token JWT ausente ou inválido.
+ *       403:
+ *         description: Pedido não pertence ao usuário autenticado.
+ *       404:
+ *         description: Pedido não encontrado.
+ */
+hPedidosRouter.get('/:id', autenticarJWT, buscarPedidoPorId);
