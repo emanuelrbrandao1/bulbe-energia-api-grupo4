@@ -39,6 +39,6 @@ const router = Router();
  *       500:
  *         description: Erro interno no servidor
  */
-router.get('/', getCarrinho);
+router.get('/', autenticarJWT, getCarrinho);
 
 export default router;
