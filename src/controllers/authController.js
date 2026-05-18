@@ -1,9 +1,7 @@
 // src/controllers/authController.js
 import jwt from 'jsonwebtoken';
 import { usuarios } from '../data/usuarios.js';
-
-const SEGREDO = 'bulbe-segredo-jwt';
-const EXPIRES_IN = '24h';
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/auth.js';
 
 // POST /auth/login [US-18]
 export function login(req, res) {
@@ -20,8 +18,8 @@ export function login(req, res) {
 
   const token = jwt.sign(
     { id: usuario.id, email: usuario.email },
-    SEGREDO,
-    { expiresIn: EXPIRES_IN },
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRES_IN },
   );
 
   return res.status(200).json({
