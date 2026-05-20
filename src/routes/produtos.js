@@ -63,7 +63,7 @@
  *           example: Categoria "invalida" não encontrada.
  */
 import { Router } from 'express';
-import { listarProdutos, getProdutosDestaque } from '../controllers/produtosController.js';
+import { listarProdutos } from '../controllers/produtosController.js';
 
 const router = Router();
 
@@ -71,8 +71,13 @@ const router = Router();
  * @openapi
  * /produtos:
  *   get:
- *     summary: Lista produtos filtrados por categoria
- *     description: Retorna a lista de produtos do catálogo. Pode ser filtrada por categoria via query string.
+ *     summary: Lista produtos com filtros opcionais
+ *     description: |
+ *       Retorna a lista de produtos do catálogo. Aceita filtros combináveis via query string:
+ *       - `categoria` (US-01): filtra por categoria
+ *       - `destaque=true` (RF-03): só produtos em destaque
+ *       - `maisVendido=true` (RF-03): só mais vendidos
+ *       Quando `destaque` ou `maisVendido` é aplicado, resultado é ordenado por avaliação (desc).
  *     tags:
  *       - Produtos
  *     parameters:
@@ -82,8 +87,20 @@ const router = Router();
  *         schema:
  *           type: string
  *           enum: [lampadas, luminarias, fitas, acessorios, assistentes]
- *         description: Categoria para filtrar os produtos. Se omitida, retorna todos.
+ *         description: Categoria para filtrar os produtos.
  *         example: lampadas
+ *       - in: query
+ *         name: destaque
+ *         required: false
+ *         schema:
+ *           type: boolean
+ *         description: Se true, retorna apenas produtos em destaque.
+ *       - in: query
+ *         name: maisVendido
+ *         required: false
+ *         schema:
+ *           type: boolean
+ *         description: Se true, retorna apenas produtos mais vendidos.
  *     responses:
  *       200:
  *         description: Lista de produtos retornada com sucesso (pode ser vazia).
@@ -102,36 +119,4 @@ const router = Router();
  */
 router.get('/', listarProdutos);
 
-/**
- * @openapi
- * /produtos/destaque:
- *   get:
- *     summary: Lista produtos em destaque ou mais vendidos
- *     description: Retorna produtos filtrados por destaque ou maisVendido, ordenados por avaliação.
- *     tags:
- *       - Produtos
- *     parameters:
- *       - in: query
- *         name: destaque
- *         schema:
- *           type: boolean
- *         description: Filtra produtos em destaque
- *       - in: query
- *         name: maisVendido
- *         schema:
- *           type: boolean
- *         description: Filtra produtos mais vendidos
- *     responses:
- *       200:
- *         description: Lista de produtos filtrada e ordenada
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Produto'
- *       500:
- *         description: Erro interno no servidor
- */
-router.get('/destaque', getProdutosDestaque);
 export default router;

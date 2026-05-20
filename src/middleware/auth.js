@@ -1,10 +1,23 @@
 // src/middleware/auth.js
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../config/auth.js';
+
 export const autenticarJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ erro: 'Token JWT ausente ou inválido.' });
   }
-  // Popula req.usuario com dados mock até integração real de JWT
-  req.usuario = { id: 1 };
-  next();
+
+  const token = authHeader.slice('Bearer '.length).trim();
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.usuario = { id: decoded.id, email: decoded.email };
+    return next();
+  } catch (err) {
+    const mensagem = err.name === 'TokenExpiredError'
+      ? 'Token JWT expirado.'
+      : 'Token JWT inválido.';
+    return res.status(401).json({ erro: mensagem });
+  }
 };
