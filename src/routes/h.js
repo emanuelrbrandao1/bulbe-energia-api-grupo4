@@ -41,7 +41,6 @@
  *           example: Item com produtoId 999 não encontrado no carrinho.
  */
 import { Router } from 'express';
-import { autenticarJWT } from '../middleware/auth.js';
 import { adicionarItemCarrinho, atualizarItemCarrinho, listarCarrinho, removerItemCarrinho, limparCarrinho, buscarPedidoPorId } from '../controllers/hControllers.js';
 
 const router = Router();
@@ -89,7 +88,7 @@ const router = Router();
  *       401:
  *         description: Token JWT ausente ou inválido
  */
-router.post('/itens', autenticarJWT, adicionarItemCarrinho);
+router.post('/itens', adicionarItemCarrinho);
 
 /**
  * @openapi
@@ -144,7 +143,7 @@ router.post('/itens', autenticarJWT, adicionarItemCarrinho);
  *             schema:
  *               $ref: '#/components/schemas/ErroCarrinho'
  */
-router.patch('/itens/:produtoId', autenticarJWT, atualizarItemCarrinho);
+router.patch('/itens/:produtoId', atualizarItemCarrinho);
 
 /**
  * @openapi
@@ -171,7 +170,7 @@ router.patch('/itens/:produtoId', autenticarJWT, atualizarItemCarrinho);
  *       401:
  *         description: Token JWT ausente ou inválido
  */
-router.get('/', autenticarJWT, listarCarrinho);
+router.get('/', listarCarrinho);
 
 /**
  * @openapi
@@ -216,7 +215,7 @@ router.get('/', autenticarJWT, listarCarrinho);
  *             schema:
  *               $ref: '#/components/schemas/ErroCarrinho'
  */
-router.delete('/itens/:produtoId', autenticarJWT, removerItemCarrinho);
+router.delete('/itens/:produtoId', removerItemCarrinho);
 
 /**
  * @openapi
@@ -244,7 +243,7 @@ router.delete('/itens/:produtoId', autenticarJWT, removerItemCarrinho);
  *       401:
  *         description: Token JWT ausente ou inválido
  */
-router.delete('/', autenticarJWT, limparCarrinho);
+router.delete('/', limparCarrinho);
 
 export default router;
 
@@ -322,4 +321,4 @@ export const hPedidosRouter = Router();
  *       404:
  *         description: Pedido não encontrado.
  */
-hPedidosRouter.get('/:id', autenticarJWT, buscarPedidoPorId);
+hPedidosRouter.get('/:id', buscarPedidoPorId);

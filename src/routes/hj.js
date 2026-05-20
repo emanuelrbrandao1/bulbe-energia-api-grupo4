@@ -22,17 +22,10 @@
  *           example: 89.90
  */
 import { Router } from 'express';
+import { autenticarJWT } from '../middleware/auth.js';
 import { listarFavoritos } from '../controllers/hControllers.js';
 
 const router = Router();
-
-const verificarJWT = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ erro: 'Token JWT ausente ou inválido.' });
-  }
-  next();
-};
 
 /**
  * @openapi
@@ -67,6 +60,6 @@ const verificarJWT = (req, res, next) => {
  *                   type: string
  *                   example: Token JWT ausente ou inválido.
  */
-router.get('/', verificarJWT, listarFavoritos);
+router.get('/', autenticarJWT, listarFavoritos);
 
 export default router;
