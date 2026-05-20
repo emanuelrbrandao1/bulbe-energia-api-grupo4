@@ -1,3 +1,4 @@
+// src/middleware/auth.js
 import jwt from 'jsonwebtoken';
 
 export const autenticarJWT = (req, res, next) => {
@@ -7,13 +8,16 @@ export const autenticarJWT = (req, res, next) => {
     return res.status(401).json({ erro: 'Token JWT ausente ou inválido.' });
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.slice('Bearer '.length).trim();
 
   try {
-    const payload = jwt.verify(token, 'bulbe-segredo-jwt');
-    req.usuario = payload; // injeta { id, email } no req
-    next();
-  } catch (error) {
-    return res.status(401).json({ erro: 'Token JWT ausente ou inválido.' });
+    const decoded = jwt.verify(token, 'bulbe-segredo-jwt');
+    req.usuario = { id: decoded.id, email: decoded.email };
+    return next();
+  } catch (err) {
+    const mensagem = err.name === 'TokenExpiredError'
+      ? 'Token JWT expirado.'
+      : 'Token JWT inválido.';
+    return res.status(401).json({ erro: mensagem });
   }
 };
