@@ -1,4 +1,4 @@
-import { Router } from 'express';
+﻿import { Router } from 'express';
 import { getCarrinho } from '../controllers/bControllers.js';
 import { autenticarJWT } from '../middleware/auth.js';
 
