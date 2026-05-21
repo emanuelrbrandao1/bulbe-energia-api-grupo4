@@ -87,8 +87,6 @@ app.use('/api/v1/auth', authRouter);
 
 // Rotas de negócio — protegidas por JWT
 app.use('/api/v1/bulbe', autenticarJWT, bulbeRouter);
-app.use('/api/v1/produtos', autenticarJWT, produtosRouter);
-app.use('/api/v1/produtos', autenticarJWT, gRouter);
 app.use('/api/v1/carrinho', autenticarJWT, hRouter);
 app.use('/api/v1/carrinho', autenticarJWT, carrinhoRouter);
 app.use('/api/v1/carrinho', autenticarJWT, eRouter);
@@ -96,6 +94,10 @@ app.use('/api/v1/carrinho', autenticarJWT, gCarrinhoRouter);
 app.use('/api/v1/favoritos', autenticarJWT, hjRouter);
 app.use('/api/v1/pedidos', autenticarJWT, hPedidosRouter);
 app.use('/api/v1/pedidos', autenticarJWT, ePedidosRouter);
+
+// Rotas públicas de catálogo — não exigem token JWT
+app.use('/api/v1/produtos', produtosRouter);
+app.use('/api/v1/produtos', gRouter);
 
 // Rotas públicas (sem JWT) — montadas em /api/v1
 app.use('/api/v1', jPublicRouter);

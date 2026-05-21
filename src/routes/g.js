@@ -98,6 +98,8 @@
  *                 minimum: 1
  *                 description: Nova quantidade do item no carrinho.
  *                 example: 3
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Quantidade atualizada com sucesso.
