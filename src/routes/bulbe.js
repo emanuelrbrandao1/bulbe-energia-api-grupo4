@@ -98,7 +98,7 @@ router.delete('/:id', removerFavoritos );
 
 /**
  * @openapi
- * /entrega:
+ * /bulbe/entrega:
  *   post:
  *     security:
  *       - bearerAuth: []
@@ -134,7 +134,7 @@ router.delete('/:id', removerFavoritos );
  *       422:
  *         description: Tipo de entrega inválido
  */
-router.post('/', selecionarEntrega);
+router.post('/entrega', selecionarEntrega);
 /**
  * @openapi
  * /bulbe/pedidos/{id}/pagamento:
@@ -196,6 +196,8 @@ router.post('/', selecionarEntrega);
  *                       type: string
  *       400:
  *         description: ID do pedido inválido
+ *       404:
+ *         description: Pedido não encontrado
  *       422:
  *         description: Método de pagamento inválido ou dados do cartão ausentes
  */
