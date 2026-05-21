@@ -1,9 +1,9 @@
 // src/middleware/auth.js
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config/auth.js';
 
 export const autenticarJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ erro: 'Token JWT ausente ou inválido.' });
   }
@@ -11,7 +11,7 @@ export const autenticarJWT = (req, res, next) => {
   const token = authHeader.slice('Bearer '.length).trim();
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, 'bulbe-segredo-jwt');
     req.usuario = { id: decoded.id, email: decoded.email };
     return next();
   } catch (err) {
