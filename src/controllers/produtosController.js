@@ -1,5 +1,6 @@
 // src/controllers/produtosController.js
-import { produtos, CATEGORIAS_VALIDAS } from '../data/produtos.js';
+import db from '../db/conexao.js';
+const CATEGORIAS_VALIDAS = ['lampadas', 'luminarias', 'fitas', 'acessorios', 'assistentes'];
 
 // Listar produtos com filtros opcionais [US-01 + RF-03]
 // Queries suportadas: ?categoria, ?destaque=true, ?maisVendido=true
@@ -12,21 +13,34 @@ export const listarProdutos = (req, res) => {
     });
   }
 
-  let resultado = [...produtos];
+  let query = `SELECT * FROM produtos WHERE 1=1`;
+  const params = [];
 
   if (categoria) {
-    resultado = resultado.filter((p) => p.categoria === categoria);
+    query += ` AND categoria = ?`;
+    params.push(categoria);
   }
+  
   if (destaque === 'true') {
-    resultado = resultado.filter((p) => p.destaque === true);
+    query += ` AND destaque = 1`;
   }
+
   if (maisVendido === 'true') {
-    resultado = resultado.filter((p) => p.maisVendido === true);
+    query += ` AND mais_vendido = 1`;
   }
 
   if (destaque === 'true' || maisVendido === 'true') {
-    resultado.sort((a, b) => b.avaliacao - a.avaliacao);
+    query += ` ORDER BY avaliacao DESC`;
   }
 
-  return res.status(200).json(resultado);
+  const resultado = db.prepare(query).all(...params);
+
+  // Converte 0/1 do SQLite para boolean
+  const produtos = resultado.map((p) => ({
+    ...p,
+    destaque:    p.destaque    === 1,
+    maisVendido: p.mais_vendido === 1,
+  }));
+
+  return res.status(200).json(produtos);
 };
