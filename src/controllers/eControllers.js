@@ -1,7 +1,5 @@
 // src/controllers/eControllers.js
-import { carrinho } from '../data/e.js';
-import { carrinho as carrinhoPrincipal, pedidos } from '../data/h.js';
-import { produtos } from '../data/produtos.js';
+import db from '../db/conexao.js';
 
 // Adicionar produto ao carrinho [US-04]
 export const adicionarItemCarrinho = (req, res) => {
@@ -19,22 +17,29 @@ export const adicionarItemCarrinho = (req, res) => {
     });
   }
 
-  const produto = produtos.find((p) => p.id === produtoId);
+  const produto = db.prepare('SELECT id FROM produtos WHERE id = ?').get(produtoId);
   if (!produto) {
     return res.status(404).json({
       erro: `Produto com id ${produtoId} não encontrado.`,
     });
   }
 
-  const itemExistente = carrinho.find((i) => i.produtoId === produtoId);
+  const usuarioId = req.usuario.id;
+  const itemExistente = db
+    .prepare('SELECT id, quantidade FROM carrinho WHERE usuario_id = ? AND produto_id = ?')
+    .get(usuarioId, produtoId);
+
   if (itemExistente) {
-    itemExistente.quantidade += quantidade;
-    return res.status(200).json(itemExistente);
+    const novaQuantidade = itemExistente.quantidade + quantidade;
+    db.prepare('UPDATE carrinho SET quantidade = ? WHERE id = ?')
+      .run(novaQuantidade, itemExistente.id);
+    return res.status(200).json({ produtoId, quantidade: novaQuantidade });
   }
 
-  const novoItem = { produtoId, quantidade };
-  carrinho.push(novoItem);
-  return res.status(201).json(novoItem);
+  db.prepare(
+    'INSERT INTO carrinho (usuario_id, produto_id, quantidade) VALUES (?, ?, ?)',
+  ).run(usuarioId, produtoId, quantidade);
+  return res.status(201).json({ produtoId, quantidade });
 };
 
 // Confirmar e registrar pedido [US-16]
@@ -47,43 +52,71 @@ export const confirmarPedido = (req, res) => {
     });
   }
 
-  if (carrinhoPrincipal.length === 0) {
+  const usuarioId = req.usuario.id;
+
+  // Itens do carrinho do usuário, com nome e preço vindos da tabela produtos.
+  const itens = db
+    .prepare(`
+      SELECT c.produto_id AS produtoId,
+             p.nome        AS nome,
+             p.preco       AS precoUnitario,
+             c.quantidade  AS quantidade
+      FROM carrinho c
+      JOIN produtos p ON p.id = c.produto_id
+      WHERE c.usuario_id = ?
+    `)
+    .all(usuarioId);
+
+  if (itens.length === 0) {
     return res.status(400).json({
       erro: 'Carrinho vazio. Adicione itens antes de confirmar o pedido.',
     });
   }
 
-  const itens = carrinhoPrincipal.map((item) => ({
-    produtoId: item.produtoId,
-    nome: item.nome,
-    precoUnitario: item.preco,
-    quantidade: item.quantidade,
-  }));
-
-  const valorTotal = itens.reduce(
-    (total, item) => total + item.precoUnitario * item.quantidade,
-    0,
+  const valorTotal = Number(
+    itens
+      .reduce((total, item) => total + item.precoUnitario * item.quantidade, 0)
+      .toFixed(2),
   );
 
-  const proximoId = pedidos.length === 0
-    ? 1
-    : Math.max(...pedidos.map((p) => p.pedidoId)) + 1;
+  const dataCriacao = new Date().toISOString();
 
-  const novoPedido = {
-    pedidoId: proximoId,
-    usuarioId: req.usuario.id,
+  // Transação: cria o pedido, seus itens e esvazia o carrinho de forma atômica.
+  const registrarPedido = db.transaction(() => {
+    const info = db
+      .prepare(`
+        INSERT INTO pedidos
+          (usuario_id, valor_total, status, forma_entrega, metodo_pagamento, data_criacao)
+        VALUES
+          (@usuarioId, @valorTotal, 'confirmado', @formaEntrega, @metodoPagamento, @dataCriacao)
+      `)
+      .run({ usuarioId, valorTotal, formaEntrega, metodoPagamento, dataCriacao });
+
+    const pedidoId = info.lastInsertRowid;
+
+    const inserirItem = db.prepare(`
+      INSERT INTO pedido_itens (pedido_id, produto_id, nome, quantidade, preco_unitario)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+    for (const item of itens) {
+      inserirItem.run(pedidoId, item.produtoId, item.nome, item.quantidade, item.precoUnitario);
+    }
+
+    db.prepare('DELETE FROM carrinho WHERE usuario_id = ?').run(usuarioId);
+
+    return pedidoId;
+  });
+
+  const pedidoId = registrarPedido();
+
+  return res.status(201).json({
+    pedidoId,
     itens,
     enderecoEntrega,
     formaEntrega,
     metodoPagamento,
-    valorTotal: Number(valorTotal.toFixed(2)),
+    valorTotal,
     status: 'confirmado',
-    dataCriacao: new Date().toISOString(),
-  };
-
-  pedidos.push(novoPedido);
-  carrinhoPrincipal.length = 0;
-
-  const { usuarioId, ...resposta } = novoPedido;
-  return res.status(201).json(resposta);
+    dataCriacao,
+  });
 };
