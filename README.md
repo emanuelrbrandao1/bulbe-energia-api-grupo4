@@ -46,7 +46,26 @@ A **Bulbe Energia API** é o backend do sistema de e-commerce mobile-first desen
 
 ## ⚙️ Como Executar Localmente
 
-> *A ser preenchido na Sprint 2.*
+> 1. Clone o repositório
+```bash
+   git clone https://github.com/emanuelrbrandao1/bulbe-energia-api-grupo4.git
+```
+2. Instale as dependências
+```bash
+   npm install
+```
+3. Popule o banco de dados
+```bash
+   node src/db/seed.js
+```
+4. Inicie o servidor
+```bash
+   npm run dev
+```
+
+> ⚠️ O arquivo `bulbe.db` é gerado automaticamente e não é versionado.
+> 
+> 📡 Acesse `/api-docs` para ver os endpoints disponíveis.
 
 ---
 

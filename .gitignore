@@ -138,3 +138,8 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+#Setup Banco de dados
+bulbe.db 
+bulbe.db-shm
+bulbe.db-wal
