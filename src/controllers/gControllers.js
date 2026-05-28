@@ -1,5 +1,5 @@
 // src/controllers/gControllers.js
-import { produtos, carrinho, pedidos } from '../data/g.js';
+import db from '../db/conexao.js';
 
 // Buscar produto por ID [US-02]
 export const buscarProdutoPorId = (req, res) => {
@@ -9,7 +9,7 @@ export const buscarProdutoPorId = (req, res) => {
     return res.status(400).json({ erro: 'O parâmetro "id" deve ser um número inteiro.' });
   }
 
-  const produto = produtos.find((p) => p.id === id);
+  const produto = db.prepare('SELECT * FROM produtos WHERE id = ?').get(id);
 
   if (!produto) {
     return res.status(404).json({ erro: `Produto com id ${id} não encontrado.` });
@@ -26,15 +26,17 @@ export const buscarRecomendacoes = (req, res) => {
     return res.status(400).json({ erro: 'O parâmetro "pedidoId" deve ser um número inteiro.' });
   }
 
-  const pedido = pedidos.find((p) => p.id === pedidoId);
+  const pedido = db.prepare('SELECT id FROM pedidos WHERE id = ?').get(pedidoId);
 
   if (!pedido) {
     return res.status(404).json({ erro: `Pedido com id ${pedidoId} não encontrado.` });
   }
 
-  const recomendacoes = produtos
-    .filter((p) => !pedido.produtoIds.includes(p.id))
-    .slice(0, 4);
+  const recomendacoes = db.prepare(`
+    SELECT * FROM produtos
+    WHERE id NOT IN (SELECT produto_id FROM pedido_itens WHERE pedido_id = ?)
+    LIMIT 4
+  `).all(pedidoId);
 
   return res.status(200).json(recomendacoes);
 };
@@ -48,12 +50,23 @@ export const atualizarQuantidadeItem = (req, res) => {
     return res.status(422).json({ erro: 'O campo "quantidade" deve ser um número inteiro maior que 0.' });
   }
 
-  const item = carrinho.find((i) => i.produtoId === produtoId);
+  const usuarioId = req.usuario.id;
+  const item = db
+    .prepare('SELECT id FROM carrinho WHERE usuario_id = ? AND produto_id = ?')
+    .get(usuarioId, produtoId);
 
   if (!item) {
     return res.status(404).json({ erro: `Item com produtoId ${produtoId} não encontrado no carrinho.` });
   }
 
-  item.quantidade = quantidade;
-  return res.status(200).json(item);
+  db.prepare('UPDATE carrinho SET quantidade = ? WHERE id = ?').run(quantidade, item.id);
+
+  const itemAtualizado = db.prepare(`
+    SELECT c.produto_id AS produtoId, p.nome, p.preco, c.quantidade
+    FROM carrinho c
+    JOIN produtos p ON p.id = c.produto_id
+    WHERE c.id = ?
+  `).get(item.id);
+
+  return res.status(200).json(itemAtualizado);
 };
