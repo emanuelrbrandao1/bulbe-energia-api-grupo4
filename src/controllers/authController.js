@@ -1,6 +1,6 @@
 // src/controllers/authController.js
 import jwt from 'jsonwebtoken';
-import { usuarios } from '../data/usuarios.js';
+import db from '../db/conexao.js';
 import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/auth.js';
 
 // POST /auth/login [US-18]
