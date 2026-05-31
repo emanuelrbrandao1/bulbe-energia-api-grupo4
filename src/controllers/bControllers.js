@@ -1,11 +1,21 @@
-import { carrinho } from '../data/b.js';
-import { produtos } from '../data/produtos.js';
+import db from '../db/conexao.js';
 
 export async function getCarrinho(req, res) {
   try {
     const usuarioId = req.usuario.id;
 
-    const itensDoUsuario = carrinho.filter(item => item.usuarioId === usuarioId);
+    const itensDoUsuario = db.prepare(`
+      SELECT
+        c.quantidade,
+        p.id        AS produtoId,
+        p.nome,
+        p.imagem,
+        p.preco,
+        p.desconto
+      FROM carrinho c
+      JOIN produtos p ON p.id = c.produto_id
+      WHERE c.usuario_id = ?
+    `).all(usuarioId);
 
     if (itensDoUsuario.length === 0) {
       return res.status(200).json({
@@ -21,10 +31,8 @@ export async function getCarrinho(req, res) {
     let totalDesconto = 0;
 
     for (const item of itensDoUsuario) {
-      const produto = produtos.find(p => p.id === item.produtoId);
-
-      const precoUnitario = produto.preco;
-      const desconto = produto.desconto || 0;
+      const precoUnitario = item.preco;
+      const desconto = item.desconto || 0;
       const precoComDesconto = precoUnitario - desconto;
       const precoTotal = precoComDesconto * item.quantidade;
 
@@ -32,9 +40,9 @@ export async function getCarrinho(req, res) {
       totalDesconto += desconto * item.quantidade;
 
       itensFormatados.push({
-        produtoId: produto.id,
-        nome: produto.nome,
-        imagem: produto.imagem,
+        produtoId: item.produtoId,
+        nome: item.nome,
+        imagem: item.imagem,
         precoUnitario: precoUnitario,
         quantidade: item.quantidade,
         precoTotal: precoTotal,
