@@ -68,14 +68,16 @@ export const favoritarProduto = (req, res) => {
     statusHttp = 201; // Criado
   }
 
-  // Busca a lista atualizada de favoritos do usuário para manter o contrato original do JSON de resposta
   const listaFavoritosAtualizada = db.prepare(`
-    SELECT * FROM favoritos WHERE usuario_id = ?
+    SELECT f.produto_id AS produtoId, p.nome, p.imagem, p.preco
+    FROM favoritos f
+    JOIN produtos p ON p.id = f.produto_id
+    WHERE f.usuario_id = ?
   `).all(usuarioId);
 
   return res
     .status(statusHttp)
-    .json({ mensagem: 'Favoritos updated', favoritos: listaFavoritosAtualizada });
+    .json({ mensagem: 'Favoritos atualizados', favoritos: listaFavoritosAtualizada });
 };
 
 // GET /enderecos/cep/:cep [US-12]
