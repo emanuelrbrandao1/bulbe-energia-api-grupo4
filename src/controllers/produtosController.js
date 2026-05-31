@@ -44,3 +44,14 @@ export const listarProdutos = (req, res) => {
 
   return res.status(200).json(produtos);
 };
+
+export function getProdutoPorId(req, res) {
+  const id = parseInt(req.params.id);
+  const produto = produtos.find(p => p.id === id);
+
+  if (!produto) {
+    return res.status(404).json({ mensagem: 'Produto não encontrado.' });
+  }
+
+  return res.status(200).json(produto);
+}

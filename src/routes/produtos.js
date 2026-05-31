@@ -59,12 +59,11 @@
  *       properties:
  *         erro:
  *           type: string
- *           description: Mensagem descritiva do erro.
+ *           description: Mensagem descritiva do erro.A
  *           example: Categoria "invalida" não encontrada.
  */
 import { Router } from 'express';
-import { listarProdutos } from '../controllers/produtosController.js';
-
+import { listarProdutos, getProdutoPorId } from '../controllers/produtosController.js';
 const router = Router();
 
 /**
@@ -118,5 +117,31 @@ const router = Router();
  *               $ref: '#/components/schemas/Erro'
  */
 router.get('/', listarProdutos);
+
+/**
+ * @openapi
+ * /produtos/{id}:
+ *   get:
+ *     summary: Retorna um produto pelo ID
+ *     tags:
+ *       - Produtos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do produto
+ *     responses:
+ *       200:
+ *         description: Produto encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Produto'
+ *       404:
+ *         description: Produto não encontrado
+ */
+router.get('/:id', getProdutoPorId);
 
 export default router;
