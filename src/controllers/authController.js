@@ -11,10 +11,12 @@ export function login(req, res) {
     return res.status(422).json({ mensagem: 'Email e senha são obrigatórios.' });
   }
 
-  const usuario = db.prepare('SELECT * FROM usuarios WHERE email = ?').get(email);
-  if (!usuario || usuario.senha !== senha) {
-  return res.status(401).json({ mensagem: 'Email ou senha inválidos.' });
-}   
+  const usuario = db
+    .prepare('SELECT id, nome, email FROM usuarios WHERE email = ? AND senha = ?')
+    .get(email, senha);
+  if (!usuario) {
+    return res.status(401).json({ mensagem: 'Email ou senha inválidos.' });
+  }
 
   const token = jwt.sign(
     { id: usuario.id, email: usuario.email },
