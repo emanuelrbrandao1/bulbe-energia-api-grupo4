@@ -1,6 +1,12 @@
+// src/db/seed.js
+// Popula o banco com dados de desenvolvimento para a Sprint 4.
+// IMPORTANTE: os 40 produtos abaixo refletem 1:1 o catalogo do front
+// (bulbe-energia-front-grupo4/produtos-data.js). Mantenha alinhado.
+// Issue: #106
+
 import db from './conexao.js';
 
-// Limpar tabelas (ordem importa por causa das FKs) 
+// Limpar tabelas (ordem importa por causa das FKs)
 db.exec(`
   DELETE FROM carrinho;
   DELETE FROM favoritos;
@@ -17,136 +23,63 @@ db.exec(`
   DELETE FROM sqlite_sequence WHERE name = 'usuarios';
 `);
 
-// Usuários
+// Usuarios
 const inserirUsuario = db.prepare(`
   INSERT INTO usuarios (nome, email, senha, papel)
   VALUES (@nome, @email, @senha, @papel)
 `);
 
 inserirUsuario.run({ nome: 'Bernardo Cerqueira', email: 'bernardo@bulbe.com', senha: '123456', papel: 'cliente' });
-inserirUsuario.run({ nome: 'Emanuel Brandão',    email: 'emanuel@bulbe.com',  senha: '123456', papel: 'cliente' });
+inserirUsuario.run({ nome: 'Emanuel Brandao',    email: 'emanuel@bulbe.com',  senha: '123456', papel: 'cliente' });
 
-// Produtos 
+// Produtos (40, importados do front)
 const inserirProduto = db.prepare(`
   INSERT INTO produtos (nome, categoria, descricao, preco, desconto, imagem, imagem_detalhes, avaliacao, total_avaliacoes, destaque, mais_vendido)
   VALUES (@nome, @categoria, @descricao, @preco, @desconto, @imagem, @imagemDetalhes, @avaliacao, @totalAvaliacoes, @destaque, @maisVendido)
 `);
 
-const produtos = [
-  {
-    nome: 'Avant Neo LED Smart 10W RGB',
-    categoria: 'lampadas',
-    descricao: 'Lâmpada LED inteligente com 16 milhões de cores e controle por app.',
-    preco: 89.90, desconto: 10,
-    imagem: 'https://exemplo.com/produtos/avant-neo-rgb.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/avant-neo-rgb-detalhes.jpg',
-    avaliacao: 4.7, totalAvaliacoes: 132, destaque: 1, maisVendido: 1,
-  },
-  {
-    nome: 'Lâmpada LED 9W Branco Quente',
-    categoria: 'lampadas',
-    descricao: 'Lâmpada LED econômica 9W com luz branca quente, equivalente a 60W incandescente.',
-    preco: 14.90, desconto: 0,
-    imagem: 'https://exemplo.com/produtos/led-9w-quente.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/led-9w-quente-detalhes.jpg',
-    avaliacao: 4.5, totalAvaliacoes: 87, destaque: 0, maisVendido: 0,
-  },
-  {
-    nome: 'Luminária Pendente Industrial Preta',
-    categoria: 'luminarias',
-    descricao: 'Luminária pendente estilo industrial em metal preto fosco, ideal para sala de jantar.',
-    preco: 199.00, desconto: 15,
-    imagem: 'https://exemplo.com/produtos/pendente-industrial.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/pendente-industrial-detalhes.jpg',
-    avaliacao: 4.8, totalAvaliacoes: 54, destaque: 1, maisVendido: 0,
-  },
-  {
-    nome: 'Luminária de Mesa Articulada',
-    categoria: 'luminarias',
-    descricao: 'Luminária de mesa articulada com base pesada e ajuste flexível.',
-    preco: 129.90, desconto: 0,
-    imagem: 'https://exemplo.com/produtos/luminaria-mesa.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/luminaria-mesa-detalhes.jpg',
-    avaliacao: 4.6, totalAvaliacoes: 41, destaque: 0, maisVendido: 0,
-  },
-  {
-    nome: 'Fita LED RGB 5m Bluetooth',
-    categoria: 'fitas',
-    descricao: 'Fita LED 5 metros com 16 milhões de cores e controle via app.',
-    preco: 79.90, desconto: 20,
-    imagem: 'https://exemplo.com/produtos/fita-led-rgb.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/fita-led-rgb-detalhes.jpg',
-    avaliacao: 4.4, totalAvaliacoes: 215, destaque: 0, maisVendido: 1,
-  },
-  {
-    nome: 'Fita LED Branca 10m',
-    categoria: 'fitas',
-    descricao: 'Fita LED 10 metros luz branca fria, ideal para iluminação de móveis.',
-    preco: 99.90, desconto: 0,
-    imagem: 'https://exemplo.com/produtos/fita-led-branca.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/fita-led-branca-detalhes.jpg',
-    avaliacao: 4.3, totalAvaliacoes: 78, destaque: 0, maisVendido: 0,
-  },
-  {
-    nome: 'Soquete E27 Universal',
-    categoria: 'acessorios',
-    descricao: 'Soquete universal E27 em porcelana branca para lâmpadas comuns.',
-    preco: 12.90, desconto: 0,
-    imagem: 'https://exemplo.com/produtos/soquete-e27.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/soquete-e27-detalhes.jpg',
-    avaliacao: 4.2, totalAvaliacoes: 33, destaque: 0, maisVendido: 0,
-  },
-  {
-    nome: 'Sensor de Presença Bivolt',
-    categoria: 'acessorios',
-    descricao: 'Sensor de presença para iluminação automática, alcance 6m.',
-    preco: 49.90, desconto: 5,
-    imagem: 'https://exemplo.com/produtos/sensor-presenca.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/sensor-presenca-detalhes.jpg',
-    avaliacao: 4.5, totalAvaliacoes: 62, destaque: 0, maisVendido: 0,
-  },
-  {
-    nome: 'Echo Dot 5ª Geração',
-    categoria: 'assistentes',
-    descricao: 'Assistente virtual Alexa com som mais alto e detecção de movimento.',
-    preco: 449.00, desconto: 10,
-    imagem: 'https://exemplo.com/produtos/echo-dot-5.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/echo-dot-5-detalhes.jpg',
-    avaliacao: 4.9, totalAvaliacoes: 421, destaque: 1, maisVendido: 1,
-  },
-  {
-    nome: 'Google Nest Mini',
-    categoria: 'assistentes',
-    descricao: 'Assistente do Google com som ambiente e controle de casa inteligente.',
-    preco: 349.00, desconto: 0,
-    imagem: 'https://exemplo.com/produtos/nest-mini.jpg',
-    imagemDetalhes: 'https://exemplo.com/produtos/nest-mini-detalhes.jpg',
-    avaliacao: 4.7, totalAvaliacoes: 287, destaque: 0, maisVendido: 1,
-  },
-];
+const inserir40 = db.transaction(() => {
+  inserirProduto.run({"nome":"Avant Neo LED Smart 10W RGB","categoria":"lampadas","descricao":"Lâmpada inteligente com controle via app Avant NEO, compatível com Alexa e Google Home. Permite criar cenários personalizados, agendamento e controle de intensidade. Ideal para ambientes internos como quartos, salas e escritórios.<br><br><strong>Especificações:</strong><br>• Potência: 10W<br>• Fluxo: 810 lumens<br>• Soquete: E27<br>• Voltagem: Bivolt (100-240V)<br>• Conectividade: WiFi 2.4GHz<br>• Cores: 16 milhões (RGB)<br>• Temperatura: 2700K-6500K","preco":35,"desconto":15,"imagem":"assets/images/imagensProdutos/lampadas/AvantNeo/AvantNeo1.jpg","imagemDetalhes":"assets/images/imagensProdutos/lampadas/AvantNeo/AvantNeo1.jpg","avaliacao":4.3,"totalAvaliacoes":128,"destaque":1,"maisVendido":1});
+  inserirProduto.run({"nome":"Elgin Smart Color 10W","categoria":"lampadas","descricao":"Lâmpada com capacidade de automação de rotinas, permite simular presença em casa. Controle por voz via Alexa ou Google Assistente. Consumo reduzido de energia, ideal para criar climas apropriados para trabalho, estudo ou descanso.<br><br><strong>Especificações:</strong><br>• Potência: 10W<br>• Soquete: E27<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• Cores: RGB + branco<br>• App: Elgin Smart<br>• IRC: >80","preco":45,"desconto":15,"imagem":"assets/images/imagensProdutos/lampadas/elginSmart10w/ElginSmart10w1.jpg","imagemDetalhes":"assets/images/imagensProdutos/lampadas/elginSmart10w/ElginSmart10w1.jpg","avaliacao":4.2,"totalAvaliacoes":95,"destaque":1,"maisVendido":1});
+  inserirProduto.run({"nome":"Elgin Smart Color 30W","categoria":"lampadas","descricao":"Versão de maior potência para ambientes maiores. Programação de rotinas de ativação, controle de cores e intensidade. Conexão WiFi direta com controle remoto pelo aplicativo ou comandos de voz.<br><br><strong>Especificações:</strong><br>• Potência: 30W<br>• Soquete: E27<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• Cores: RGB + branco<br>• App: Elgin Smart<br>• Controle: Voz e app","preco":72,"desconto":15,"imagem":"assets/images/imagensProdutos/lampadas/elginSmart30w/ElginSmart30w1.jpg","imagemDetalhes":"assets/images/imagensProdutos/lampadas/elginSmart30w/ElginSmart30w1.jpg","avaliacao":4.1,"totalAvaliacoes":67,"destaque":0,"maisVendido":1});
+  inserirProduto.run({"nome":"Intelbras EWS 410","categoria":"lampadas","descricao":"Lâmpada inteligente com app Izy Smart. Permite controle e programação de iluminação com interface intuitiva. Fácil instalação e configuração, ideal para iniciantes em automação residencial.<br><br><strong>Especificações:</strong><br>• Potência: 10W<br>• Soquete: E27<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• App: Izy Smart<br>• Compatibilidade: Alexa, Google","preco":58,"desconto":15,"imagem":"assets/images/imagensProdutos/lampadas/intelbrasEWS410/IntelbrasEWS1.jpg","imagemDetalhes":"assets/images/imagensProdutos/lampadas/intelbrasEWS410/IntelbrasEWS1.jpg","avaliacao":4.4,"totalAvaliacoes":112,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Positivo Smart Lâmpada Wi-Fi 10W","categoria":"lampadas","descricao":"Lâmpada brasileira com fácil instalação sem necessidade de hub. Controle via app ou comandos de voz (Alexa/Google). Agendamento de horários, criação de cenas e integração com outros dispositivos Positivo.<br><br><strong>Especificações:</strong><br>• Potência: 10W<br>• Fluxo: 806 lumens<br>• Soquete: E27<br>• Voltagem: Bivolt<br>• Conectividade: WiFi 2.4GHz<br>• Cores: RGB + branco<br>• App: Positivo Casa Inteligente","preco":109,"desconto":15,"imagem":"assets/images/imagensProdutos/lampadas/philipsHue/PhilipsHue1.jpg","imagemDetalhes":"assets/images/imagensProdutos/lampadas/philipsHue/PhilipsHue1.jpg","avaliacao":4.2,"totalAvaliacoes":89,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Xiaomi Mi LED Smart Bulb","categoria":"lampadas","descricao":"Lâmpada com design elegante e dissipação eficiente de calor. App Mi Home permite definir horários, cronômetros e integração com outros dispositivos Xiaomi. Compatível com Alexa e Google Assistente.<br><br><strong>Especificações:</strong><br>• Potência: 10W<br>• Fluxo: 800 lumens<br>• Soquete: E27<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• App: Mi Home<br>• Cores: RGB + temperatura ajustável","preco":89,"desconto":15,"imagem":"assets/images/imagensProdutos/lampadas/positivoSmart/PositivoSmart1.jpg","imagemDetalhes":"assets/images/imagensProdutos/lampadas/positivoSmart/PositivoSmart1.jpg","avaliacao":4.5,"totalAvaliacoes":156,"destaque":1,"maisVendido":1});
+  inserirProduto.run({"nome":"Tramontina Smart LED 10W","categoria":"lampadas","descricao":"Lâmpada com conexão híbrida WiFi e Bluetooth. Controle por app gratuito ou comandos de voz. 16 milhões de cores para personalização completa do ambiente. Instalação simples e intuitiva.<br><br><strong>Especificações:</strong><br>• Potência: 10W<br>• Soquete: E27<br>• Voltagem: Bivolt<br>• Conectividade: WiFi + Bluetooth<br>• Cores: 16 milhões<br>• App: T Smart<br>• Compatibilidade: Alexa, Google, Siri","preco":79,"desconto":15,"imagem":"assets/images/imagensProdutos/lampadas/tramontinaSmart/TramontinaLed1.jpg","imagemDetalhes":"assets/images/imagensProdutos/lampadas/tramontinaSmart/TramontinaLed1.jpg","avaliacao":4.3,"totalAvaliacoes":78,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Philips Hue White and Color E27","categoria":"lampadas","descricao":"Lâmpada premium com iluminação superior e cores vibrantes. Compatível com Alexa, Google Home, Apple HomeKit. App completo com cenas predefinidas e sincronização com TV/música. Requer Hue Bridge para recursos completos.<br><br><strong>Especificações:</strong><br>• Potência: 9W<br>• Fluxo: 806 lumens<br>• Soquete: E27<br>• Voltagem: 220V ou 127V<br>• Conectividade: Zigbee (requer Bridge)<br>• Cores: 16 milhões<br>• App: Philips Hue","preco":359,"desconto":15,"imagem":"assets/images/imagensProdutos/lampadas/xiaomiLedSmart/XiaomiLed1.jpg","imagemDetalhes":"assets/images/imagensProdutos/lampadas/xiaomiLedSmart/XiaomiLed1.jpg","avaliacao":4.7,"totalAvaliacoes":234,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Positivo Smart Luminária de Mesa Wi-Fi","categoria":"luminarias","descricao":"Luminária de mesa com modo de vibração de cores ao ritmo da música. Controle via app Positivo Casa Inteligente. Design moderno e portátil, ideal para quartos e escritórios. Comando de voz via Alexa.<br><br><strong>Especificações:</strong><br>• Potência: 7W<br>• Fluxo: 400 lumens<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• Cores: RGB + branco<br>• Função: Ritmo musical<br>• Dimensões: Portátil","preco":179,"desconto":15,"imagem":"assets/images/imagensProdutos/luminarias/luminarias-positivosmart-1.jpg","imagemDetalhes":"assets/images/imagensProdutos/luminarias/luminarias-positivosmart-1.jpg","avaliacao":4.1,"totalAvaliacoes":67,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Xiaomi Mi Bedside Lamp 2","categoria":"luminarias","descricao":"Luminária de cabeceira premium com sincronização com Mi Band. Desligamento automático ao detectar sono profundo. Modos Sleep Timer e Wake Up. Design compacto e elegante. Controle por toque ou app.<br><br><strong>Especificações:</strong><br>• Potência: LED integrado<br>• Fluxo luminoso: Ajustável<br>• Conectividade: WiFi, Bluetooth<br>• Cores: RGB + branco<br>• App: Mi Home<br>• Dimensões: 5.9x5.9x9.8cm<br>• Peso: 1kg","preco":399,"desconto":15,"imagem":"assets/images/imagensProdutos/luminarias/luminarias-xiaomibedside-1.jpg","imagemDetalhes":"assets/images/imagensProdutos/luminarias/luminarias-xiaomibedside-1.jpg","avaliacao":4.8,"totalAvaliacoes":189,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Elsys Luminária Cilíndrica Smart","categoria":"luminarias","descricao":"Luminária cilíndrica minimalista com 4 botões físicos. Controle de cor, intensidade e timer. App próprio compatível com Alexa e Google Assistente. Tons frio, quente e neutro disponíveis.<br><br><strong>Especificações:</strong><br>• Potência: LED integrado<br>• Fluxo: 400 lumens<br>• Voltagem: Bivolt (microUSB)<br>• Conectividade: WiFi 2.4GHz<br>• Cores: 16 milhões RGB<br>• Vida útil: 30.000h<br>• Dimensões: 21x10cm","preco":359,"desconto":15,"imagem":"assets/images/imagensProdutos/luminarias/luminarias-elsys-1.jpg","imagemDetalhes":"assets/images/imagensProdutos/luminarias/luminarias-elsys-1.jpg","avaliacao":4.3,"totalAvaliacoes":91,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Geonav Hi Luminária Inteligente","categoria":"luminarias","descricao":"Luminária com conexão híbrida para configuração rápida. Compatível com Alexa e Google Assistente. Controle de temperatura de cor e intensidade. Design moderno para decoração contemporânea.<br><br><strong>Especificações:</strong><br>• Potência: LED integrado<br>• Conectividade: WiFi + Bluetooth<br>• Voltagem: Bivolt<br>• Cores: RGB + branco<br>• Temperaturas: Frio/Quente<br>• App: Hi by Geonav","preco":249,"desconto":15,"imagem":"assets/images/imagensProdutos/luminarias/luminarias-geonav-1.png","imagemDetalhes":"assets/images/imagensProdutos/luminarias/luminarias-geonav-1.png","avaliacao":4.2,"totalAvaliacoes":73,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Elgin Plafon Smart Quadrado 24W","categoria":"luminarias","descricao":"Plafon inteligente para instalação em teto. Ideal para salas e cozinhas. Controle via Elgin Smart app. Programação de horários e criação de cenários. Alta luminosidade para ambientes amplos.<br><br><strong>Especificações:</strong><br>• Potência: 24W<br>• Tipo: Plafon para embutir<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• Temperatura: 3000K-6500K<br>• Formato: Quadrado<br>• RGB: Sim","preco":189,"desconto":15,"imagem":"assets/images/imagensProdutos/luminarias/luminarias-elgynplafon-1.jpg","imagemDetalhes":"assets/images/imagensProdutos/luminarias/luminarias-elgynplafon-1.jpg","avaliacao":4.4,"totalAvaliacoes":134,"destaque":1,"maisVendido":1});
+  inserirProduto.run({"nome":"Elgin Ecospot Smart 5W Quadrado","categoria":"luminarias","descricao":"Spot inteligente para instalação embutida. Perfeito para iluminação pontual e decorativa. Controle de cores RGB e temperatura. Compatível com Alexa e Google Home. Economia de energia.<br><br><strong>Especificações:</strong><br>• Potência: 5W<br>• Tipo: Spot embutir<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• Temperatura: 3000K-6500K RGB<br>• Formato: Quadrado compacto","preco":95,"desconto":15,"imagem":"assets/images/imagensProdutos/luminarias/luminarias-elgynecospot-1.jpg","imagemDetalhes":"assets/images/imagensProdutos/luminarias/luminarias-elgynecospot-1.jpg","avaliacao":4.3,"totalAvaliacoes":82,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"AGL Abajur LED WiFi RGB","categoria":"luminarias","descricao":"Abajur inteligente com mudança de cor por ritmo musical. Controle de intensidade e escolha entre milhões de cores. Design moderno e funcional. App Tuya Smart para configuração fácil.<br><br><strong>Especificações:</strong><br>• Potência: LED integrado<br>• Conectividade: WiFi<br>• Cores: RGBW<br>• Compatibilidade: Alexa, Google, Tuya<br>• Função: Ritmo musical<br>• Controle: App e voz","preco":149,"desconto":15,"imagem":"assets/images/imagensProdutos/luminarias/luminarias-dowlight-1.jpg","imagemDetalhes":"assets/images/imagensProdutos/luminarias/luminarias-dowlight-1.jpg","avaliacao":4.1,"totalAvaliacoes":56,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Ekaza Luminária SmartLife","categoria":"luminarias","descricao":"Luminária versátil com eficiência energética. Personalização de luz e temperatura de cor. Controle remoto via app SmartLife. Integração completa com assistentes virtuais.<br><br><strong>Especificações:</strong><br>• Potência: LED integrado<br>• Conectividade: WiFi<br>• Voltagem: Bivolt<br>• Cores: RGB + branco<br>• App: SmartLife<br>• Compatibilidade: Alexa, Google Home","preco":159,"desconto":15,"imagem":"assets/images/imagensProdutos/luminarias/luminarias-ekaza-1.jpg","imagemDetalhes":"assets/images/imagensProdutos/luminarias/luminarias-ekaza-1.jpg","avaliacao":4,"totalAvaliacoes":48,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Positivo Smart Fita LED RGB 3m","categoria":"fitas","descricao":"Fita LED de 2ª geração com cores vibrantes. Controle via app ou comandos de voz (Alexa/Google). Instalação fácil com adesivo incluso. Ideal para iluminação indireta e decorativa.<br><br><strong>Especificações:</strong><br>• Comprimento: 3 metros<br>• Potência: 14W<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• Cores: 16 milhões + branco<br>• App: Positivo Casa Inteligente<br>• Adesivo: Incluso","preco":259,"desconto":15,"imagem":"assets/images/imagensProdutos/fitas/PositivoSmartFita1.webp","imagemDetalhes":"assets/images/imagensProdutos/fitas/PositivoSmartFita1.webp","avaliacao":4.2,"totalAvaliacoes":98,"destaque":1,"maisVendido":1});
+  inserirProduto.run({"nome":"Elgin Fita LED Smart 5m","categoria":"fitas","descricao":"Fita LED de 5 metros com proteção IP44. Controle via app Elgin Smart. Compatível com Alexa e Google Home. Instalação versátil para móveis, espelhos e paredes.<br><br><strong>Especificações:</strong><br>• Comprimento: 5 metros<br>• Potência: 20W<br>• Temperatura: 3000K-6500K<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• Cores: RGB<br>• Proteção: IP44","preco":279,"desconto":15,"imagem":"assets/images/imagensProdutos/fitas/ElginFitaLED1.webp","imagemDetalhes":"assets/images/imagensProdutos/fitas/ElginFitaLED1.webp","avaliacao":4.3,"totalAvaliacoes":112,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Tramontina Smart Fita LED RGB 3m","categoria":"fitas","descricao":"Fita LED com 16 milhões de cores. Controle por celular via app T Smart ou comandos de voz (Alexa, Google, Siri). Adesivo 3M para instalação flexível. Personalização completa do ambiente.<br><br><strong>Especificações:</strong><br>• Comprimento: 3 metros<br>• Potência: 4W/m (12W total)<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• Cores: 16 milhões<br>• App: T Smart<br>• IRC: >80","preco":189,"desconto":15,"imagem":"assets/images/imagensProdutos/fitas/TramontinaSmartFita1.webp","imagemDetalhes":"assets/images/imagensProdutos/fitas/TramontinaSmartFita1.webp","avaliacao":4.4,"totalAvaliacoes":127,"destaque":0,"maisVendido":1});
+  inserirProduto.run({"nome":"Geonav Hi Fita LED 3m RGB","categoria":"fitas","descricao":"Fita LED com proteção IP65 contra água. Conexão híbrida WiFi e Bluetooth. Alta luminosidade de 1650 lumens. Compatível com Alexa e Google Assistente. Dimerizável e versátil.<br><br><strong>Especificações:</strong><br>• Comprimento: 3 metros<br>• Potência: 12W<br>• Fluxo: 1650 lumens<br>• Voltagem: Bivolt<br>• Conectividade: WiFi + Bluetooth<br>• Cores: RGB + branco<br>• Proteção: IP65","preco":219,"desconto":15,"imagem":"assets/images/imagensProdutos/fitas/GeonavFita1.jpg","imagemDetalhes":"assets/images/imagensProdutos/fitas/GeonavFita1.jpg","avaliacao":4.3,"totalAvaliacoes":85,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"TP-Link Tapo L920-5 RGB","categoria":"fitas","descricao":"Fita LED endereçável 20% mais brilhante. Durabilidade 50% maior que produtos comuns. Controle via app Tapo com cenas predefinidas. Instalação flexível com cortes personalizados.<br><br><strong>Especificações:</strong><br>• Comprimento: 5 metros<br>• Conectividade: WiFi<br>• Cores: 16 milhões<br>• Voltagem: Bivolt<br>• App: Tapo<br>• Compatibilidade: Alexa, Google, Apple<br>• Brilho: 20% superior","preco":299,"desconto":15,"imagem":"assets/images/imagensProdutos/fitas/TP-LinkTapo1.webp","imagemDetalhes":"assets/images/imagensProdutos/fitas/TP-LinkTapo1.webp","avaliacao":4.6,"totalAvaliacoes":178,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Nova Digital Fita LED 5m Smart","categoria":"fitas","descricao":"Fita LED de 5 metros com estrutura flexível. Controle por app ou assistentes virtuais. Instalação facilitada com adesivo. Ideal para decoração de ambientes e iluminação indireta.<br><br><strong>Especificações:</strong><br>• Comprimento: 5 metros<br>• Potência: 12.4W<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• Cores: RGB<br>• App: Tuya/SmartLife<br>• Estrutura: Flexível","preco":132,"desconto":15,"imagem":"assets/images/imagensProdutos/fitas/NovaDigitalFita1.jpg","imagemDetalhes":"assets/images/imagensProdutos/fitas/NovaDigitalFita1.jpg","avaliacao":4.1,"totalAvaliacoes":64,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"AGL Fita LED RGB 5m WiFi","categoria":"fitas","descricao":"Fita LED com 60 LEDs por metro. Marcação de corte para ajuste personalizado. Controle via app com Alexa e Google Home. Adesivo dupla face incluso. Boa relação custo-benefício.<br><br><strong>Especificações:</strong><br>• Comprimento: 5 metros<br>• Potência: 8W<br>• LEDs: 60 LEDs/metro<br>• Temperatura: 3000K-6500K RGB<br>• Conectividade: WiFi<br>• Voltagem: Bivolt<br>• Marcação: Corte a cada 5cm","preco":115,"desconto":15,"imagem":"assets/images/imagensProdutos/fitas/AGLFita1.jpg","imagemDetalhes":"assets/images/imagensProdutos/fitas/AGLFita1.jpg","avaliacao":4.3,"totalAvaliacoes":93,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"La Casa Smart Fita LED 5m","categoria":"fitas","descricao":"Fita LED com LEDs SMD 5050 de alta qualidade. Proteção IP65 contra água. Cores vibrantes e alto brilho. Fonte bivolt inclusa. Cortes a cada 5cm. Compatível com Alexa e Google Home.<br><br><strong>Especificações:</strong><br>• Comprimento: 5 metros<br>• LEDs: SMD 5050<br>• Voltagem: Bivolt (fonte inclusa)<br>• Conectividade: WiFi<br>• Cores: 16 milhões RGB<br>• Proteção: IP65<br>• Adesivo: Dupla face","preco":149,"desconto":15,"imagem":"assets/images/imagensProdutos/fitas/LaCasaFita1.jpg","imagemDetalhes":"assets/images/imagensProdutos/fitas/LaCasaFita1.jpg","avaliacao":4.2,"totalAvaliacoes":76,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Positivo Smart Controle Universal","categoria":"acessorios","descricao":"Controle universal que substitui todos os controles infravermelhos. Controle TV, ar-condicionado e outros aparelhos pelo celular. Comandos de voz via Alexa ou Google. Criação de cenas e rotinas.<br><br><strong>Especificações:</strong><br>• Tipo: Controle IR WiFi<br>• Conectividade: WiFi 2.4GHz<br>• Alcance: 8 metros<br>• Cobertura: 360°<br>• Alimentação: Micro USB<br>• App: Positivo Casa Inteligente<br>• Compatibilidade: TV, AC, áudio","preco":99,"desconto":15,"imagem":"assets/images/imagensProdutos/acessorios/acessorios/PositivoSmartControle/PositivoControle1.png","imagemDetalhes":"assets/images/imagensProdutos/acessorios/acessorios/PositivoSmartControle/PositivoControle1.png","avaliacao":4.6,"totalAvaliacoes":145,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Elgin Controle Universal Smart","categoria":"acessorios","descricao":"Controle remoto universal para aparelhos infravermelhos. Alcance de 10m sem barreiras. Programação de cenas e agendamentos. Fácil instalação e uso, conecta direto ao roteador WiFi.<br><br><strong>Especificações:</strong><br>• Tipo: Controle IR WiFi<br>• Conectividade: WiFi<br>• Alcance: 10 metros<br>• Cobertura: 360°<br>• App: Elgin Smart<br>• Compatibilidade: Alexa, Google<br>• Cor: Vermelho","preco":89,"desconto":15,"imagem":"assets/images/imagensProdutos/acessorios/acessorios/ElginControleUniversalSmart/ElginControle1.webp","imagemDetalhes":"assets/images/imagensProdutos/acessorios/acessorios/ElginControleUniversalSmart/ElginControle1.webp","avaliacao":4.5,"totalAvaliacoes":118,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Intelbras EWS 101 Interruptor 1 Botão","categoria":"acessorios","descricao":"Interruptor inteligente básico de 1 tecla. Design simples e texturizado. Controle por app ou comando de voz. Programação de horários e criação de rotinas. Fácil instalação no padrão brasileiro.<br><br><strong>Especificações:</strong><br>• Tipo: Interruptor touch<br>• Botões: 1 tecla<br>• Conectividade: WiFi<br>• Material: Plástico ABS<br>• Padrão: 4x2 brasileiro<br>• Voltagem: Bivolt<br>• App: Izy Smart","preco":89,"desconto":15,"imagem":"assets/images/imagensProdutos/acessorios/acessorios/IntelbrasEWS101/IntelbrasEWS10011.webp","imagemDetalhes":"assets/images/imagensProdutos/acessorios/acessorios/IntelbrasEWS101/IntelbrasEWS10011.webp","avaliacao":4.6,"totalAvaliacoes":156,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Intelbras EWS 1003 Interruptor 3 Botões","categoria":"acessorios","descricao":"Interruptor triplo touchscreen para sistemas complexos. Compatível com Alexa e Google Assistente. Rotinas pré-programadas via app. Design moderno em preto ou branco.<br><br><strong>Especificações:</strong><br>• Tipo: Interruptor touchscreen<br>• Botões: 3 teclas<br>• Conectividade: WiFi<br>• Padrão: 4x2<br>• Voltagem: Bivolt<br>• App: Izy Smart<br>• Cores: Preto/Branco","preco":129,"desconto":15,"imagem":"assets/images/imagensProdutos/acessorios/acessorios/IntelbrasEWS1003/Intelbras10031.jpg","imagemDetalhes":"assets/images/imagensProdutos/acessorios/acessorios/IntelbrasEWS1003/Intelbras10031.jpg","avaliacao":4.7,"totalAvaliacoes":203,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Positivo Smart Plug Wi-Fi 10A","categoria":"acessorios","descricao":"Tomada inteligente com monitoramento de energia. Liga/desliga aparelhos pelo celular. Programação de horários para economia. Compatível com Alexa e Google. Certificação Anatel.<br><br><strong>Especificações:</strong><br>• Tipo: Tomada inteligente<br>• Corrente: 10A (1000W)<br>• Voltagem: Bivolt 100-240V<br>• Conectividade: WiFi 2.4GHz<br>• Monitoramento: Consumo em tempo real<br>• App: Positivo Casa Inteligente","preco":65,"desconto":15,"imagem":"assets/images/imagensProdutos/acessorios/acessorios/PositivoSmartPlug/PositivoPlug1.jpg","imagemDetalhes":"assets/images/imagensProdutos/acessorios/acessorios/PositivoSmartPlug/PositivoPlug1.jpg","avaliacao":4.4,"totalAvaliacoes":132,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Ekaza EKNX-T005 Smart Plug","categoria":"acessorios","descricao":"Tomada smart com botão físico e LED indicador. Fácil instalação plug and play. Monitoramento de consumo pelo app. Controle à distância e agendamento. Compatível com Alexa e Google.<br><br><strong>Especificações:</strong><br>• Tipo: Tomada inteligente<br>• Corrente: 16A<br>• Voltagem: Bivolt<br>• Conectividade: WiFi<br>• App: SmartLife/Tuya<br>• Monitoramento: Consumo de energia<br>• Botão físico: Sim (LED)","preco":75,"desconto":15,"imagem":"assets/images/imagensProdutos/acessorios/acessorios/EkazaSmartPlug/EkazaSmartPlug1.webp","imagemDetalhes":"assets/images/imagensProdutos/acessorios/acessorios/EkazaSmartPlug/EkazaSmartPlug1.webp","avaliacao":4.4,"totalAvaliacoes":98,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"NovaDigital Interruptor WiFi 3 Botões","categoria":"acessorios","descricao":"Interruptor com acabamento em vidro temperado. 3 botões touch para controle independente. Controle remoto e por voz. App Tuya/SmartLife/NovaDigital. Design moderno e sofisticado.<br><br><strong>Especificações:</strong><br>• Tipo: Interruptor touch<br>• Botões: 3 teclas<br>• Conectividade: WiFi 2.4GHz<br>• Padrão: 4x2<br>• Voltagem: Bivolt (110-220V)<br>• Material: Vidro temperado<br>• Potência: 2200W por botão","preco":139,"desconto":15,"imagem":"assets/images/imagensProdutos/acessorios/acessorios/NovaDigitalInterruptor/NovadigitalInt1.webp","imagemDetalhes":"assets/images/imagensProdutos/acessorios/acessorios/NovaDigitalInterruptor/NovadigitalInt1.webp","avaliacao":4.5,"totalAvaliacoes":87,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Xiaomi Mi Smart Home Hub","categoria":"acessorios","descricao":"Hub central para smart home Xiaomi. Conecta sensores e dispositivos inteligentes. Três tipos de conexão (WiFi, Zigbee, Bluetooth). Automações via app Mi Home. Integração com câmeras Xiaomi.<br><br><strong>Especificações:</strong><br>• Tipo: Hub central Zigbee<br>• Conectividade: WiFi 2.4GHz, Zigbee 3.0, Bluetooth 5.0<br>• Alcance: 50 metros<br>• App: Mi Home<br>• Compatibilidade: Apple HomeKit<br>• Dispositivos: Até 50","preco":249,"desconto":15,"imagem":"assets/images/imagensProdutos/acessorios/acessorios/XiaomiMiSmartHomeHub/XiaomiSmartHome1.webp","imagemDetalhes":"assets/images/imagensProdutos/acessorios/acessorios/XiaomiMiSmartHomeHub/XiaomiSmartHome1.webp","avaliacao":4.7,"totalAvaliacoes":234,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Amazon Echo Dot 5ª Geração","categoria":"assistentes","descricao":"Smart speaker compacto com Alexa. Controla dispositivos inteligentes por voz, reproduz músicas do Spotify/Amazon Music, responde perguntas e cria rotinas. Sensor de temperatura para automações climáticas. Som melhorado com graves mais profundos.<br><br><strong>Especificações:</strong><br>• Tipo: Smart speaker<br>• Assistente: Alexa integrada<br>• Conectividade: WiFi, Bluetooth<br>• Alto-falante: 1.73\"<br>• Voltagem: Bivolt (adaptador)<br>• Sensor: Temperatura integrado<br>• Cores: Azul, Branco, Preto","preco":299,"desconto":15,"imagem":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoDot5/echodot51.jpg","imagemDetalhes":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoDot5/echodot51.jpg","avaliacao":4.7,"totalAvaliacoes":567,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Amazon Echo Pop","categoria":"assistentes","descricao":"Versão mais acessível e compacta do Echo. Design semicircular moderno que se encaixa em qualquer ambiente. Controle completo de casa inteligente via Alexa, streaming de música e chamadas mãos-livres. Ideal para quartos e espaços pequenos.<br><br><strong>Especificações:</strong><br>• Tipo: Smart speaker compacto<br>• Assistente: Alexa<br>• Conectividade: WiFi, Bluetooth<br>• Alto-falante: Frontal direcional<br>• Dimensões: Semicircular compacta<br>• Voltagem: Bivolt<br>• Cores: Branco, Preto, Lavanda, Verde-água","preco":224,"desconto":15,"imagem":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoPop/echopop1.jpg","imagemDetalhes":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoPop/echopop1.jpg","avaliacao":4.5,"totalAvaliacoes":342,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Amazon Echo Spot (2024)","categoria":"assistentes","descricao":"Despertador inteligente com display e Alexa integrada. Mostra hora, previsão do tempo e controla rotinas matinais. Som vibrante para alarmes e música. Tela personalizável com diferentes mostradores de relógio. Perfeito para criados-mudos.<br><br><strong>Especificações:</strong><br>• Tipo: Smart display com relógio<br>• Tela: Semicircular com display<br>• Assistente: Alexa<br>• Conectividade: WiFi, Bluetooth<br>• Funções: Despertador inteligente<br>• Alto-falante: Som vibrante<br>• Cores: Preto, Branco, Azul","preco":431,"desconto":15,"imagem":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoSpot/echospot1.jpg","imagemDetalhes":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoSpot/echospot1.jpg","avaliacao":4.4,"totalAvaliacoes":198,"destaque":0,"maisVendido":0});
+  inserirProduto.run({"nome":"Amazon Echo Show 8 (3ª Geração)","categoria":"assistentes","descricao":"Smart display HD de 8 polegadas com áudio espacial. Videochamadas em HD, streaming de vídeo (Netflix, Prime Video), controle visual de dispositivos smart. Câmera com privacidade física. Hub central para automação residencial completa.<br><br><strong>Especificações:</strong><br>• Tipo: Smart display<br>• Tela: 8\" HD touchscreen<br>• Resolução: HD (1280x800)<br>• Câmera: 13 MP com enquadramento automático<br>• Assistente: Alexa<br>• Áudio: Espacial (2 alto-falantes 2\")<br>• Hub: Casa inteligente integrado","preco":1399,"desconto":15,"imagem":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoShow8/echoshow1.jpg","imagemDetalhes":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoShow8/echoshow1.jpg","avaliacao":4.6,"totalAvaliacoes":456,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Amazon Echo Dot Max (2025)","categoria":"assistentes","descricao":"Modelo top de linha com som envolvente e graves profundos. Hub de automação integrado com WiFi 6E. Tecnologia de adaptação acústica automática ao ambiente. Som premium para música e entretenimento, controle total de casa inteligente.<br><br><strong>Especificações:</strong><br>• Tipo: Smart speaker premium/hub<br>• Conectividade: WiFi 6E, Bluetooth<br>• Alto-falantes: Tweeter 0.8\" + Woofer 2.5\"<br>• Assistente: Alexa avançada<br>• Hub: Casa inteligente integrado<br>• Adaptação: Áudio automático ao ambiente<br>• Cores: Grafite, Branco, Roxo","preco":849,"desconto":15,"imagem":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoDotMax/AmazonEchoDotMax1.jpg","imagemDetalhes":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AmazonEchoDotMax/AmazonEchoDotMax1.jpg","avaliacao":4.8,"totalAvaliacoes":289,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Google Nest Mini (2ª Geração)","categoria":"assistentes","descricao":"Smart speaker compacto do Google com graves potentes. Controle por voz com \"Ok Google\", streaming de música, respostas personalizadas e controle de casa inteligente. Design sustentável com materiais reciclados. Fácil fixação na parede.<br><br><strong>Especificações:</strong><br>• Tipo: Smart speaker compacto<br>• Assistente: Google Assistente<br>• Conectividade: WiFi, Bluetooth<br>• Alto-falante: Graves 2x mais potentes<br>• Voltagem: Bivolt<br>• Material: Tecido reciclado<br>• Cores: Carvão, Giz","preco":389,"desconto":15,"imagem":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/GoogleNestMini2/nestmini1.webp","imagemDetalhes":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/GoogleNestMini2/nestmini1.webp","avaliacao":4.5,"totalAvaliacoes":412,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Google Nest Audio","categoria":"assistentes","descricao":"Smart speaker focado em qualidade de áudio superior. Woofer e tweeter dedicados para som rico e envolvente. Google Assistente para controle completo da casa. Pode criar sistema de som estéreo com múltiplas unidades. Inclui 3 meses YouTube Premium.<br><br><strong>Especificações:</strong><br>• Tipo: Smart speaker premium<br>• Alto-falantes: Woofer 75mm + Tweeter 19mm<br>• Potência: 75% mais alto que Google Home<br>• Assistente: Google Assistente<br>• Conectividade: WiFi, Bluetooth<br>• Material: 70% plástico reciclado<br>• Cores: Cinza-claro, Cinza-escuro","preco":849,"desconto":15,"imagem":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/GoogleNestAudio/goognes1.webp","imagemDetalhes":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/GoogleNestAudio/goognes1.webp","avaliacao":4.7,"totalAvaliacoes":356,"destaque":1,"maisVendido":0});
+  inserirProduto.run({"nome":"Apple HomePod mini","categoria":"assistentes","descricao":"Smart speaker da Apple com som imersivo 360°. Siri responde a comandos, controla HomeKit e reproduz Apple Music. Chip S5 para áudio computacional avançado. Reconhece até 6 vozes diferentes. Integração perfeita com iPhone via chip U1. Design compacto premium.<br><br><strong>Especificações:</strong><br>• Tipo: Smart speaker<br>• Assistente: Siri integrada<br>• Conectividade: WiFi, Bluetooth, Thread<br>• Áudio: 360° com áudio computacional<br>• Chip: S5 da Apple<br>• Dimensões: 8.43cm altura<br>• Cores: Branco, Preto, Amarelo, Laranja, Azul","preco":649,"desconto":15,"imagem":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AppleHomePodMini/homepodmini1.jpg","imagemDetalhes":"assets/images/imagensProdutos/assistentes/Assistentes Virtuais/AppleHomePodMini/homepodmini1.jpg","avaliacao":4.8,"totalAvaliacoes":523,"destaque":1,"maisVendido":0});
+});
+inserir40();
 
-for (const produto of produtos) {
-  inserirProduto.run(produto);
-}
-
-// Carrinho de exemplo 
-const inserirCarrinho = db.prepare(`
-  INSERT INTO carrinho (usuario_id, produto_id, quantidade)
-  VALUES (@usuarioId, @produtoId, @quantidade)
-`);
-
-inserirCarrinho.run({ usuarioId: 1, produtoId: 1, quantidade: 2 });
-inserirCarrinho.run({ usuarioId: 1, produtoId: 5, quantidade: 1 });
-inserirCarrinho.run({ usuarioId: 2, produtoId: 9, quantidade: 1 });
-
-// Favoritos de exemplo
-const inserirFavorito = db.prepare(`
-  INSERT INTO favoritos (usuario_id, produto_id)
-  VALUES (@usuarioId, @produtoId)
-`);
-
-inserirFavorito.run({ usuarioId: 1, produtoId: 3 });
-inserirFavorito.run({ usuarioId: 1, produtoId: 9 });
-inserirFavorito.run({ usuarioId: 2, produtoId: 5 });
-
-console.log('Seed concluido: banco populado.');
+console.log('OK seed concluido: 2 usuarios + ' + db.prepare('SELECT COUNT(*) as n FROM produtos').get().n + ' produtos.');
