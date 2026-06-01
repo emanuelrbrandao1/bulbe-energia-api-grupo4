@@ -1,5 +1,6 @@
 // src/controllers/gControllers.js
 import db from '../db/conexao.js';
+import { toCamelProduto } from './produtosController.js';
 
 // Buscar produto por ID [US-02]
 export const buscarProdutoPorId = (req, res) => {
@@ -15,7 +16,7 @@ export const buscarProdutoPorId = (req, res) => {
     return res.status(404).json({ erro: `Produto com id ${id} não encontrado.` });
   }
 
-  return res.status(200).json(produto);
+  return res.status(200).json(toCamelProduto(produto));
 };
 
 // Buscar produtos recomendados após confirmação do pedido [US-19]
@@ -38,7 +39,7 @@ export const buscarRecomendacoes = (req, res) => {
     LIMIT 4
   `).all(pedidoId);
 
-  return res.status(200).json(recomendacoes);
+  return res.status(200).json(recomendacoes.map(toCamelProduto));
 };
 
 // Atualizar quantidade de item no carrinho [RF-05]

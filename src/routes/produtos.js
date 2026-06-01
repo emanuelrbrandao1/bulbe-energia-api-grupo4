@@ -63,7 +63,7 @@
  *           example: Categoria "invalida" não encontrada.
  */
 import { Router } from 'express';
-import { listarProdutos, getProdutoPorId } from '../controllers/produtosController.js';
+import { listarProdutos } from '../controllers/produtosController.js';
 const router = Router();
 
 /**
@@ -118,32 +118,8 @@ const router = Router();
  */
 router.get('/', listarProdutos);
 
-/**
- * @openapi
- * /produtos/{id}:
- *   get:
- *     summary: Retorna um produto pelo ID
- *     tags:
- *       - Produtos
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do produto
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Produto encontrado
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Produto'
- *       404:
- *         description: Produto não encontrado
- */
-router.get('/:id', getProdutoPorId);
+// GET /produtos/:id e' servido por routes/g.js (gControllers.buscarProdutoPorId),
+// que ja usa SQL e mapeia snake -> camel. Mantinha-se aqui uma versao duplicada e bugada
+// (referenciando variavel `produtos` que nao existia) - removida em #108.
 
 export default router;
