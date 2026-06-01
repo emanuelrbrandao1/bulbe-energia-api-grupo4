@@ -1,4 +1,10 @@
 import db from '../db/conexao.js';
+
+const tiposEntrega = {
+    padrao:  { prazoEstimado: '6-9 dias', custoEntrega: 10 },
+    express: { prazoEstimado: '3-5 dias', custoEntrega: 25 },
+};
+
 //Remover item dos favoritos [US-11]
 export const removerFavoritos = (req,res)=>{
     const id = parseInt(req.params.id,10);
