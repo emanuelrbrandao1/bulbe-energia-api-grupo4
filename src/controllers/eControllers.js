@@ -1,6 +1,13 @@
 // src/controllers/eControllers.js
 import db from '../db/conexao.js';
 
+// Custos de entrega (mesmas opcoes definidas em bulbeControllers.tiposEntrega).
+// Duplicacao intencional - constante pequena, sem arquivo de config novo. Manter em sincronia.
+const TIPOS_ENTREGA = {
+  padrao:  { custoEntrega: 10 },
+  express: { custoEntrega: 25 },
+};
+
 // Adicionar produto ao carrinho [US-04]
 export const adicionarItemCarrinho = (req, res) => {
   const { produtoId, quantidade } = req.body;
@@ -73,11 +80,12 @@ export const confirmarPedido = (req, res) => {
     });
   }
 
-  const valorTotal = Number(
-    itens
-      .reduce((total, item) => total + item.precoUnitario * item.quantidade, 0)
-      .toFixed(2),
+  const valorItens = itens.reduce(
+    (total, item) => total + item.precoUnitario * item.quantidade,
+    0,
   );
+  const custoFrete = TIPOS_ENTREGA[formaEntrega]?.custoEntrega ?? 0;
+  const valorTotal = Number((valorItens + custoFrete).toFixed(2));
 
   const dataCriacao = new Date().toISOString();
 

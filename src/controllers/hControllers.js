@@ -6,6 +6,7 @@ const getCarrinhoFormatado = (usuarioId) =>
     SELECT c.produto_id AS produtoId,
            p.nome        AS nome,
            p.preco       AS preco,
+           p.imagem      AS imagem,
            c.quantidade  AS quantidade
     FROM carrinho c
     JOIN produtos p ON p.id = c.produto_id
