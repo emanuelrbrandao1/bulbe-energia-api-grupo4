@@ -25,6 +25,8 @@
  *                 type: integer
  *                 description: Quantidade a ser adicionada (deve ser > 0).
  *                 example: 2
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: Produto adicionado ao carrinho como novo item.

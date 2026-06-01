@@ -132,6 +132,8 @@ router.get('/', listarProdutos);
  *         schema:
  *           type: integer
  *         description: ID do produto
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Produto encontrado
