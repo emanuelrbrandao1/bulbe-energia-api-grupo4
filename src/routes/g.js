@@ -15,6 +15,8 @@
  *           type: integer
  *         description: Identificador único do pedido confirmado.
  *         example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de até 4 produtos recomendados (excluindo os já presentes no pedido).
@@ -54,6 +56,8 @@
  *           type: integer
  *         description: Identificador único do produto.
  *         example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Produto encontrado com sucesso.
